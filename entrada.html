@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Aplicació d'incidències -- Ernest Lluch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/yii/incidencies/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Incidències</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Benvingut, <a href="#" class="navbar-link">John Smith</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="#entrada">Entrada</a></li>
+              <li><a href="#operativa">Operativa</a></li>
+              <li><a href="#estadistiques">Estadístiques</a></li>
+              <li><a href="#admin">Administració</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Nova entrada</li>
+              <li><a href="#">Retard</a></li>
+              <li><a href="#">Amonestació oral</a></li>
+              <li><a href="#">Expulsió</a></li>
+              <li class="nav-header">Consulta</li>
+              <li><a href="#">Les meves</a></li>
+              <li><a href="#">Dels meus alumnes</a></li>
+            </ul>
+          </div><!--/.well -->
+
+          <div class="well">
+            <p>Alumnes:</p>
+<select class="span12" size=20>
+  <option value="jsmith">John Smith Junior</option>
+  <option value="alumne1">Alumne1</option>
+  <option value="alumne2">Alumne2</option>
+  <option value="alumne3">Alumne3</option>
+  <option value="alumne4">Alumne4</option>
+</select>
+<p>Filtres, opcions, etc.</p>
+<p><button name="aplicaAlumne" class="span6">Escull l'alumne</button></p>
+<p>&nbsp</p>
+
+          </div><!--/.well -->
+
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit">
+            <h1>Operativa</h1>
+            <p>Des d'aquí podreu introduir i consultar entrades de la base de dades d'incidències.</p>
+          </div>
+          <div name="accioprincipal">
+    <form>
+    <fieldset>
+    <legend>Retard</legend>
+    <label>Label name</label>
+    <input type="text" placeholder="Descripcio">
+    <span class="help-block">block-level help text here.</span>
+    <label class="checkbox">
+    <input type="checkbox"> Check aleatori
+    </label>
+    <button type="submit" class="btn">Submit</button>
+    </fieldset>
+    </form>
+
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/yii/incidencies/js/jquery.min.js"></script>
+    <script src="/yii/incidencies/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
