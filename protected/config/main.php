@@ -40,7 +40,7 @@ return array(
 		
 		'urlManager'=>array(
 			'urlFormat'=>'path',
-			'showScriptName'=>false,
+			'showScriptName'=>true,
 			'rules'=>array(
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
@@ -54,10 +54,10 @@ return array(
 		*/
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=incidencies',
+			'connectionString' => 'mysql:host=localhost;dbname=barcelo',
 			'emulatePrepare' => true,
-			'username' => 'incidencies',
-			'password' => 'elluch',
+			'username' => 'barcelo',
+			'password' => '11235813',
 			'charset' => 'utf8',
 		),
 		'errorHandler'=>array(
