@@ -52,11 +52,11 @@
 		      } ?>
             </p>
             <ul class="nav">
-              <li><a href="<?php echo Yii::app()->request->baseUrl; ?>/login.php">Entrada</a></li>
-              <li><a href="<?php echo Yii::app()->request->baseUrl; ?>/operativa.php">Operativa</a></li>
-              <li><a href="<?php echo Yii::app()->request->baseUrl; ?>/estadistiques.php">Estadístiques</a></li>
+              <li><a id="entrada" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/site/login">Entrada</a></li>
+              <li><a id="operativa" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/operativa">Operativa</a></li>
+              <li><a id="estadistiques" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/estadistiques">Estadístiques</a></li>
               <?php if (isset($admin)) { ?>
-              <li><a href="<?php echo Yii::app()->request->baseUrl; ?>/admin.php">Administració</a></li>
+              <li><a id="admin" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/admin">Administració</a></li>
               <?php } ?>
             </ul>
           </div><!--/.nav-collapse -->
