@@ -13,30 +13,16 @@ $this->breadcrumbs=array(
   <h1>Entrada</h1>
 </div>
 
-<form>
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'login-form',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-)); ?>
+<form method=post name=LoginForm>
 <fieldset>
+  <legend>Introdueixi la següent informació per entrar al sistema</legend>
+  <label>Identificador d'usuari</label>
+  <input type="text" name="username" placeholder="<?php echo $model->username ?>">
 
-	<legend>Introdueixi la següent informació per entrar al sistema</legend>
+  <label>Contrasenya</label>
+  <input type="password" name="password">
 
-	<?php echo $form->labelEx($model,'username'); ?>
-	<?php echo $form->textField($model,'username'); ?>
-	<?php echo $form->error($model,'username'); ?>
-
-
-	<?php echo $form->labelEx($model,'password'); ?>
-	<?php echo $form->passwordField($model,'password'); ?>
-	<?php echo $form->error($model,'password'); ?>
-
-
-		<?php echo CHtml::submitButton('Login'); ?>
+  <button type="submit" class="btn">Entrar</button>
 
 </fieldset>
-<?php $this->endWidget(); ?>
 </form><!-- form -->
