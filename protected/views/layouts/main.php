@@ -80,7 +80,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.min.js"></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/bootstrap.min.js"></script>
-    <?php if isset($scriptFile) {
+    <?php if (isset($scriptFile)) {
         echo '<script src="'. Yii::app()->request->baseUrl . '/js/' . $scriptFile . '"></script>';
     } ?>
 
