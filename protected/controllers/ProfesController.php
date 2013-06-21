@@ -28,11 +28,11 @@ class ProfesController extends Controller
     {
         // Personalitzades per equipDirectiu com a administradors
         return array(
-            array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index','view'),
+            array('allow',  // allow profes (per ara, els unics que fan login)
+                'actions'=>array('index','view','chpassword'),
                 'users'=>array('@'),
             ),
-            array('allow', // allow admin user to perform 'admin' and 'delete' actions
+            array('allow', // allow admin (equipDirectiu) la resta
                 'actions'=>array('create','update','admin','delete'),
                 'users'=>array('@'),
                 'expression'=>'$user->getState("equipDirectiu",false)'
