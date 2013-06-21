@@ -1,6 +1,30 @@
 <?php
 
 /**
+ * Generate a random salt in the crypt(3) standard Blowfish format.
+ *
+ * @param int $cost Cost parameter from 4 to 31.
+ *
+ * @throws Exception on invalid cost parameter.
+ * @return string A Blowfish hash salt for use in PHP's crypt()
+ */
+function blowfishSalt($cost = 13)
+{
+    if (!is_numeric($cost) || $cost < 4 || $cost > 31) {
+        throw new Exception("cost parameter must be between 4 and 31");
+    }
+    $rand = array();
+    for ($i = 0; $i < 8; $i += 1) {
+        $rand[] = pack('S', mt_rand(0, 0xffff));
+    }
+    $rand[] = substr(microtime(), 2, 6);
+    $rand = sha1(implode('', $rand), true);
+    $salt = '$2a$' . sprintf('%02d', $cost) . '$';
+    $salt .= strtr(substr(base64_encode($rand), 0, 22), array('+' => '.'));
+    return $salt;
+}
+
+/**
  * This is the model class for table "profes".
  *
  * The followings are the available columns in table 'profes':
@@ -8,6 +32,7 @@
  * @property integer $equip_directiu
  * @property integer $tutor
  * @property string $nom
+ * @property string $username
  * @property string $email
  * @property string $password
  *
@@ -34,6 +59,16 @@ class Profes extends CActiveRecord
 	{
 		return 'profes';
 	}
+	
+	protected function beforeSave() 
+	{
+		if (parent::beforeSave()) {
+			// Passwords passats per la funcio de crypt()
+			$this->password = crypt ( $this->password , blowfishSalt() );
+			return true;
+		} else
+		  return false;
+	}
 
 	/**
 	 * @return array validation rules for model attributes.
@@ -43,12 +78,12 @@ class Profes extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('nom, email, password', 'required'),
+			array('nom, username, email, password', 'required'),
 			array('equip_directiu, tutor', 'numerical', 'integerOnly'=>true),
-			array('nom, email, password', 'length', 'max'=>100),
+			array('nom, username, email, password', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, equip_directiu, tutor, nom, email, password', 'safe', 'on'=>'search'),
+			array('id, equip_directiu, tutor, nom, username, email, password', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -75,6 +110,7 @@ class Profes extends CActiveRecord
 			'equip_directiu' => 'Equip Directiu',
 			'tutor' => 'Tutor',
 			'nom' => 'Nom',
+			'username' => 'Identificador d\'usuari',
 			'email' => 'Email',
 			'password' => 'Password',
 		);
@@ -95,6 +131,7 @@ class Profes extends CActiveRecord
 		$criteria->compare('equip_directiu',$this->equip_directiu);
 		$criteria->compare('tutor',$this->tutor);
 		$criteria->compare('nom',$this->nom,true);
+		$criteria->compare('username',$this->username,true);
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('password',$this->password,true);
 

@@ -13,14 +13,14 @@ $this->breadcrumbs=array(
   <h1>Entrada</h1>
 </div>
 
-<form method=post name=LoginForm>
+<form id="login-form" method="post" action="<?php echo Yii::app()->request->baseUrl; ?>/index.php/site/login">
 <fieldset>
   <legend>Introdueixi la següent informació per entrar al sistema</legend>
   <label>Identificador d'usuari</label>
-  <input type="text" name="username" placeholder="<?php echo $model->username ?>">
+  <input type="text" id="LoginForm_username" value="<?php echo $model->username ?>" name="LoginForm[username]"/>
 
   <label>Contrasenya</label>
-  <input type="password" name="password">
+  <input type="password" id="LoginForm_password" name="LoginForm[password]">
 
   <button type="submit" class="btn">Entrar</button>
 

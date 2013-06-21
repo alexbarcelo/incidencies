@@ -25,6 +25,7 @@ $this->menu=array(
 		'equip_directiu',
 		'tutor',
 		'nom',
+		'username',
 		'email',
 		'password',
 	),
