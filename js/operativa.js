@@ -2,8 +2,8 @@
  * Operativa -- Javascript, jQuery & AJAX
  */
 
- var URLprefix = "/yii/incidencies/index.php/operativa/"
- var llistat_profes = new Array();
+ URLprefix = "/yii/incidencies/index.php/operativa/"
+ llistat_profes = new Array();
 
 $(function(){
     // Seleccionem link actiu del menú principal
@@ -48,8 +48,14 @@ $(function(){
     $("#escull").click(alumneSeleccionat);
     $("#llista_alumnes").dblclick(alumneSeleccionat);
 
+    // el llistat de classes
+    $("#filtres_classe").load(URLprefix + "llistatClasses")
+
     // Filtratge d'alumnes
     $("#filtres_refresca").click(filtraAlumnes);
+    $("#filtres_nom").change(filtraAlumnes);
+    $("#filtres_cognom").change(filtraAlumnes);
+    $("#filtres_classe").change(filtraAlumnes);
 
     /*
      * Generica per a totes les accions:
@@ -96,7 +102,9 @@ function expulsio() {
  * S'actualitza la informació de la form, visible i no visible
  */
 function alumneSeleccionat() {
-
+    al = $("#llista_alumnes option:selected");
+    $("#ap_idalumne").val(al.val());
+    $("#ap_alumne").val(al.text());
 }
 
 /*
@@ -129,6 +137,11 @@ function filtraAlumnes() {
 
     if (cognom) {
         query.push("cognom LIKE '%" + cognom + "%'");
+    }
+
+    val = $("#filtres_classe option:selected").val();
+    if (val > 0) {
+        query.push("classe="+val);
     }
 
     $("#llista_alumnes").load(URLprefix + "filtraAlumnes",{'query':query.join(" AND ")});

@@ -23,7 +23,7 @@ class OperativaController extends Controller
         // Personalitzades per equipDirectiu com a administradors
         return array(
             array('allow',  // allow profes (per ara, els unics que fan login)
-                'actions'=>array('index','llistatProfes','filtraAlumnes'),
+                'actions'=>array('index','llistatProfes','filtraAlumnes', 'llistatClasses'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -69,7 +69,23 @@ class OperativaController extends Controller
             foreach ($alumnes as $a) {
                 echo '<option value="' . $a->id .'">'. $a->cognom.', '.$a->nom . '</option>';
             }
-            return;
+        }
+    }
+
+    /**
+     * AJAX, triggered at start.
+     *
+     * Carrega la llista de classes disponibles a l'institut, i les
+     * deixa a la comboBox de sel·lecció (filtratge d'alumnes)
+     */
+    public function actionLlistatClasses()
+    {
+        // línia buida, placeholder
+        echo '<option value="-1">Escollir...</option>';
+        $classes=Classes::model()->findAll();
+        $data = [];
+        foreach ($classes as $c) {
+            echo '<option value="' . $c->id .'">' . $c->descr .'</option>';
         }
     }
 
