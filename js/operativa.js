@@ -58,6 +58,9 @@ $(function(){
      */
     $(".accions").click(function(){
         $("#accioPrincipal").css("display","inherit");
+        $(".accions").each(function() {
+            $(this).parent().removeClass("active");
+        });
     });
 
     $("#retard").click(retard);
@@ -74,14 +77,17 @@ $(function(){
 
 function retard() {
     $("#ap_legend").text("Retard");
+    $("#retard").parent().addClass("active");
 }
 
 function amonestacioOral() {
     $("#ap_legend").text("Amonestació oral");
+    $("#amonestacioOral").parent().addClass("active");
 }
 
 function expulsio() {
     $("#ap_legend").text("Expulsió");
+    $("#expulsio").parent().addClass("active");
 }
 
 /*
