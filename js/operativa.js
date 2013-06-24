@@ -23,6 +23,7 @@ $(function(){
     // Possibilitat de fer incidencies en nom d'altres responsables
     $("#ap_self").click(function(){
         $("#ap_idprofe").val("-1");
+        $("#ap_profe").val("");
         if ($(this).is(":checked")) {
             $("#ap_divprofe").slideUp("slow");
         } else {
