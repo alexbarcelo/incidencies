@@ -3,10 +3,7 @@
 /* @var $model LoginForm */
 /* @var $form CActiveForm  */
 
-$this->pageTitle=Yii::app()->name . ' - Login';
-$this->breadcrumbs=array(
-	'Login',
-);
+$this->pageTitle=Yii::app()->name . ' - Entrada';
 ?>
 
 <div class="page-header">
@@ -26,3 +23,9 @@ $this->breadcrumbs=array(
 
 </fieldset>
 </form><!-- form -->
+
+<script>
+$(function(){
+    $("#entrada").addClass("active");
+});
+</script>

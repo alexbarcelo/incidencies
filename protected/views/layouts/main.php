@@ -34,6 +34,13 @@
     </style>
 </head>
 <body>
+        <!-- Le javascript
+    ================================================== -->
+    <!-- No es molt elegant posar-les al principi, pero... -->
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.min.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/bootstrap.min.js"></script>
+
+
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -48,15 +55,15 @@
               <?php if (Yii::app()->user->isGuest) {
                   echo "Has d'entrar al sistema abans d'utilitzar-lo";
               } else {
-                  echo 'Benvingut, <a href="'. Yii::app()->request->baseUrl .'/index.php/site/logout" class="navbar-link">'.Yii::app()->user->name.'</a>';
+                  echo 'Benvingut, <a href="'. Yii::app()->createUrl('site/logout'). '" class="navbar-link">'.Yii::app()->user->name.'</a>';
               } ?>
             </p>
             <ul class="nav">
-              <li><a id="entrada" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/site/login">Entrada</a></li>
-              <li><a id="operativa" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/operativa">Operativa</a></li>
-              <li><a id="estadistiques" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/estadistiques">Estadístiques</a></li>
+              <li id="entrada"><a href="<?php echo Yii::app()->createUrl('site/login'); ?>">Entrada</a></li>
+              <li id="operativa"><a href="<?php echo Yii::app()->createUrl('operativa'); ?>">Operativa</a></li>
+              <li id="estadistiques"><a href="<?php echo Yii::app()->createUrl('estadistiques') ; ?>">Estadístiques</a></li>
               <?php if (Yii::app()->user->getState('equipDirectiu',false)) { ?>
-              <li><a id="admin" href="<?php echo Yii::app()->request->baseUrl; ?>/index.php/admin">Administració</a></li>
+              <li id="admin"><a href="<?php echo Yii::app()->createUrl('admin') ; ?>">Administració</a></li>
               <?php } ?>
             </ul>
           </div><!--/.nav-collapse -->
@@ -74,15 +81,6 @@
       </footer>
 
     </div><!--/.fluid-container-->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.min.js"></script>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/bootstrap.min.js"></script>
-    <?php if (isset($scriptFile)) {
-        echo '<script src="'. Yii::app()->request->baseUrl . '/js/' . $scriptFile . '"></script>';
-    } ?>
 
 </body>
 </html>
