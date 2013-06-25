@@ -15,6 +15,7 @@ $(function(){
     $("#filtres").css("display","none");
     $("#accioPrincipal").css("display","none");
     $("#respostaPrincipal").css("display","none");
+    $("#col_meves").css("display","none");
 
     // Sistema de slidetoggle per als filtres d'alumnes
     $("#filtresflip").click(function(e){
@@ -68,16 +69,23 @@ $(function(){
 
     /*
      * Generica per a totes les accions:
-     * (per si encara no s'havia seleccionat cap acció,
-     *  fem visible l'actual, sigui quina sigui)
+     * 
+     * Fem visible el que toca i tapem el que no s'ha de mostrar.
      */
     $(".accions").click(function(){
         $("#accioPrincipal").css("display","inherit");
+        $("#col_alumnes").css("display","inherit");
         $("#respostaPrincipal").css("display","none");
+        $("#col_meves").css("display","none");
         $(".accions").each(function() {
             $(this).parent().removeClass("active");
         });
     });
+    
+    // similar però amb les consultes, no es mostra columna d'usuaris
+    $(".consultes").click(function(){
+		$("#col_alumnes").css("display","none");
+	});
 
     $("#retard").click(retard);
     $("#amonestacioOral").click(amonestacioOral);
@@ -150,14 +158,24 @@ function setupAmonestacioTipus(data) {
  * a-là-AJAX esperant rebre la resposta satisfactòria.
  */
 function novaIncidencia() {
+	// serialitzem el valor de l'array
+	var incidencia = $("#ap_form").serializeArray();
+	
+	// si no hi ha profe responsable ("ennomde"), null-ejat
+	if ( $("#apself").is(":checked") ) {
+		unset(incidencia["ennomde"]);
+	}
+	
+	$.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
 }
 
 /*
  * Callback per a la resposta AJAX de nova incidència
  */
-function novaI_CB() {
+function novaI_CB(data) {
     $("#accioPrincipal").css("display","none");
     $("#respostaPrincipal").css("display","inherit");
+    $("#respostaPrincipal").html(data);
 }
 
 

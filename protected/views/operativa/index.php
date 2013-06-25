@@ -55,13 +55,13 @@
   <div id="accioPrincipal">
     <form id="ap_form">
       <fieldset>
-        <input type="hidden" id="ap_tipus" value="">
+        <input type="hidden" name="tipus" id="ap_tipus" value="">
         <legend id="ap_legend">Legend</legend>
         <label>Introduiu una breu descripció</label>
-        <input type="text" class="input-large" id="ap_descripcio" placeholder="Descripció">
+        <input type="text" class="input-large" name="descripcio" id="ap_descripcio" placeholder="Descripció">
         <label>Alumne</label>
         <input type="text" class="input-medium" id="ap_alumne" disabled>
-        <input type="hidden" id="ap_idalumne" value="-1">
+        <input type="hidden" id="ap_idalumne" name="alumne" value="-1">
         <span class="help-block">Sel·leccioneu-lo al menú lateral</span>
         <label class="checkbox">
           <input type="checkbox" id="ap_self" checked>Sóc el responsable de la incidència
@@ -71,7 +71,7 @@
           <div id="ap_divprofe" class="well well-small span9">
             <label>Professor responsable de la incidència:</label>
             <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
-            <input type="hidden" id="ap_idprofe">
+            <input type="hidden" id="ap_idprofe" name="ennomde">
             <span class="help-block">Comenci a introduir el nom o cognoms del professor. Asseguri's de sel·leccionar una entrada correcta de les opcions que apareixeran.</span>
           </div>
         </div> <!-- /row -->
@@ -79,11 +79,11 @@
         <div class="row-fluid">
           <div class="span6">
             <label>Notes addicionals per a la incidència</label>
-            <textarea rows="3" id="ap_notes" class="span12" style="resize: vertical;"></textarea>
+            <textarea rows="3" id="ap_notes" name="notes" class="span12" style="resize: vertical;"></textarea>
           </div>
           <div class="span6">
             <label>Hora lectiva:</label>
-            <select id="ap_horalectiva" class="input-small">
+            <select id="ap_horalectiva" name="horaLectiva" class="input-small">
               <option value=1>8:00</option>
               <option value=2>9:00</option>
               <option value=3>10:00</option>
@@ -98,7 +98,7 @@
               <option value=12>Altres</option>
             </select>
             <label>Situació:</label>
-              <input type="text" class="span12" id="ap_situacio" placeholder="Lloc, aula, espai...">
+              <input type="text" class="span12" name="situacio" id="ap_situacio" placeholder="Lloc, aula, espai...">
           </div>
         </div> <!-- /row -->
 

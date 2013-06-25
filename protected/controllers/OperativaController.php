@@ -71,6 +71,51 @@ class OperativaController extends Controller
             }
         }
     }
+    
+    /**
+     * AJAX function
+     * 
+     * Es crida via jQuery quan hi ha una intenció (per part de l'usuari)
+     * de guardar una incidència.
+     * 
+     * La resposta és codi HTML
+     */
+    public function actionNovaIncidencia()
+    {
+        if (!isset($_POST['query'])) {
+            // AJAX, bad call, let's quit
+            return;
+        } else {
+			$amonestacio = new Amonestacions();
+			$amonestacio->attributes($_POST);
+			if ($amonestacio->save()) {
+				echo <<< EOF
+<div class="alert alert-error alert-block">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4>Hi ha hagut un error</h4>
+    <p>Hi ha hagut un error en la creació de la incidència. Comproveu si s'ha creat
+    satisfactòriament, o torneu-la a crear.</p>
+    
+    <p>En cas de que el problema persisteixi, consulteu personal tècnic.</p>
+</div>
+EOF
+			} else {
+				$id = $amonestacio->id();
+				$hashId = friendlyHash($id);
+				echo <<< EOF
+<div class="alert alert-success alert-block">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4>Hi ha hagut un error</h4>
+    <p>Hi ha hagut un error en la creació de la incidència. Comproveu si s'ha creat
+    satisfactòriament, o torneu-la a crear.</p>
+    
+    <p>En cas de que el problema persisteixi, consulteu personal tècnic.</p>
+</div>
+EOF
+			}
+        }
+    }
+
 
     /**
      * AJAX, triggered at start.
@@ -83,7 +128,7 @@ class OperativaController extends Controller
         // línia buida, placeholder
         echo '<option value="-1">Escollir...</option>';
         $classes=Classes::model()->findAll();
-        $data = [];
+        $data = array();
         foreach ($classes as $c) {
             echo '<option value="' . $c->id .'">' . $c->descr .'</option>';
         }
@@ -95,11 +140,12 @@ class OperativaController extends Controller
     public function actionLlistatProfes()
     {
         $profes=Profes::model()->findAll();
-        $data = [];
+        $data = array();
         foreach ($profes as $p) {
-            $entry = [
+            $entry = array(
                 "id" =>  $p->id,
-                "nom" => $p->nom];
+                "nom" => $p->nom
+            );
             $data[] = $entry;
         }
         header('Content-type: application/json');
@@ -112,14 +158,14 @@ class OperativaController extends Controller
     public function actionLlistatTipus()
     {
         $tipus=Tipus::model()->findAll();
-        $data = [];
+        $data = array();
         foreach ($tipus as $t) {
-            $entry = [
+            $entry = array(
                 "id"        => $t->id,
                 "descr"     => $t->descr,
                 "longDescr" => $t->longDescr,
                 "abrev"     => $t->abrev
-            ];
+            );
             $data[] = $entry;
         }
         header('Content-type: application/json');
