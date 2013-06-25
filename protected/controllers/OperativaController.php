@@ -23,7 +23,7 @@ class OperativaController extends Controller
         // Personalitzades per equipDirectiu com a administradors
         return array(
             array('allow',  // allow profes (per ara, els unics que fan login)
-                'actions'=>array('index','llistatProfes','filtraAlumnes', 'llistatClasses'),
+                'actions'=>array('index','llistatProfes', 'llistatTipus','filtraAlumnes', 'llistatClasses'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -100,6 +100,26 @@ class OperativaController extends Controller
             $entry = [
                 "id" =>  $p->id,
                 "nom" => $p->nom];
+            $data[] = $entry;
+        }
+        header('Content-type: application/json');
+        echo CJSON::encode($data);
+    }
+
+    /**
+     * Llistat de tipus, per a ús intern de JavaScript o altres
+     */
+    public function actionLlistatTipus()
+    {
+        $tipus=Tipus::model()->findAll();
+        $data = [];
+        foreach ($tipus as $t) {
+            $entry = [
+                "id"        => $t->id,
+                "descr"     => $t->descr,
+                "longDescr" => $t->longDescr,
+                "abrev"     => $t->abrev
+            ];
             $data[] = $entry;
         }
         header('Content-type: application/json');

@@ -6,6 +6,8 @@
  * The followings are the available columns in table 'tipus':
  * @property integer $id
  * @property string $descr
+ * @property string $longDescr
+ * @property string $abrev
  *
  * The followings are the available model relations:
  * @property Amonestacions[] $amonestacions
@@ -38,11 +40,13 @@ class Tipus extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('descr', 'required'),
+			array('descr, abrev', 'required'),
 			array('descr', 'length', 'max'=>20),
+			array('abrev', 'length', 'max'=>5),
+			array('longDescr', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, descr', 'safe', 'on'=>'search'),
+			array('id, descr, longDescr, abrev', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -66,6 +70,8 @@ class Tipus extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'descr' => 'Descr',
+			'longDescr' => 'Long Descr',
+			'abrev' => 'Abrev',
 		);
 	}
 
@@ -82,6 +88,8 @@ class Tipus extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('descr',$this->descr,true);
+		$criteria->compare('longDescr',$this->longDescr,true);
+		$criteria->compare('abrev',$this->abrev,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
