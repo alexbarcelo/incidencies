@@ -50,6 +50,8 @@
     <h1>Operativa</h1>
     <p>Des d'aquí podreu introduir i consultar entrades de la base de dades d'incidències.</p>
   </div>
+  <div id="respostaPrincipal">
+  </div><!-- /#respostaPrincipal-->
   <div id="accioPrincipal">
     <form id="ap_form">
       <fieldset>
@@ -103,7 +105,7 @@
         <button type="submit" id="ap_btn" class="btn">Guardar incidència</button>
       </fieldset>
     </form>
-  </div>
+  </div><!-- /#accioPrincipal-->
 </div><!--/span-->
 
 <!-- Le more javascript

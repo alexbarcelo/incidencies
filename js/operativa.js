@@ -14,6 +14,7 @@ $(function(){
     // Amaguem certes coses per defecte
     $("#filtres").css("display","none");
     $("#accioPrincipal").css("display","none");
+    $("#respostaPrincipal").css("display","none");
 
     // Sistema de slidetoggle per als filtres d'alumnes
     $("#filtresflip").click(function(e){
@@ -72,6 +73,7 @@ $(function(){
      */
     $(".accions").click(function(){
         $("#accioPrincipal").css("display","inherit");
+        $("#respostaPrincipal").css("display","none");
         $(".accions").each(function() {
             $(this).parent().removeClass("active");
         });
@@ -149,6 +151,15 @@ function setupAmonestacioTipus(data) {
  */
 function novaIncidencia() {
 }
+
+/*
+ * Callback per a la resposta AJAX de nova incidència
+ */
+function novaI_CB() {
+    $("#accioPrincipal").css("display","none");
+    $("#respostaPrincipal").css("display","inherit");
+}
+
 
 /*
  * Acció de filtratge d'alumnes
