@@ -183,7 +183,9 @@ function setupAmonestacioTipus(data) {
  */
 function novaIncidencia() {
     // carreguem el valor de la data en el camp hidden addient
-    $("#ap_datahidden").val($("#ap_data").datepicker("getDate"));
+    var data = new Date($("#ap_data").datepicker("getDate"));
+
+    $("#ap_datahidden").val(data.toISOString());
 
     // serialitzem el valor de l'array
     var incidencia = $("#ap_form").serializeArray();
