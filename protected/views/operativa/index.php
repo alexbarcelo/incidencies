@@ -56,7 +56,7 @@
     <form id="ap_form" method="post">
       <fieldset>
         <input type="hidden" name="tipus" id="ap_tipus" value="">
-        <input type="hidden" name="profe" id="ap_profe" value="<?php echo Yii::app()->user->getState('uid',0); ?>">
+        <input type="hidden" name="profe" value="<?php echo Yii::app()->user->getState('uid',0); ?>">
         <legend id="ap_legend">Legend</legend>
         <label>Introduiu una breu descripció</label>
         <input type="text" class="input-large" name="descripcio" id="ap_descripcio" placeholder="Descripció">
