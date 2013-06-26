@@ -53,9 +53,10 @@
   <div id="respostaPrincipal">
   </div><!-- /#respostaPrincipal-->
   <div id="accioPrincipal">
-    <form id="ap_form">
+    <form id="ap_form" method="post">
       <fieldset>
         <input type="hidden" name="tipus" id="ap_tipus" value="">
+        <input type="hidden" name="profe" id="ap_profe" value="<?php echo Yii::app()->user->getState('uid',0); ?>">
         <legend id="ap_legend">Legend</legend>
         <label>Introduiu una breu descripció</label>
         <input type="text" class="input-large" name="descripcio" id="ap_descripcio" placeholder="Descripció">
@@ -78,6 +79,8 @@
 
         <div class="row-fluid">
           <div class="span6">
+            <label>Situació:</label>
+              <input type="text" class="span12" name="situacio" id="ap_situacio" placeholder="Lloc, aula, espai...">
             <label>Notes addicionals per a la incidència</label>
             <textarea rows="3" id="ap_notes" name="notes" class="span12" style="resize: vertical;"></textarea>
           </div>
@@ -97,8 +100,9 @@
               <option value=11>17:30</option>
               <option value=12>Altres</option>
             </select>
-            <label>Situació:</label>
-              <input type="text" class="span12" name="situacio" id="ap_situacio" placeholder="Lloc, aula, espai...">
+            <label>Dia:</label>
+            <div id="ap_data"></div>
+            <input type="hidden" name="dataLectiva" id="ap_datahidden">
           </div>
         </div> <!-- /row -->
 
@@ -111,4 +115,5 @@
 <!-- Le more javascript
 ================================================== -->
 <!-- Operativa-specific -->
+<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.min.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/operativa.js"></script>

@@ -22,6 +22,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'descripcio'); ?>
+		<?php echo $form->textField($model,'descripcio',array('size'=>60,'maxlength'=>100)); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'alumne'); ?>
 		<?php echo $form->textField($model,'alumne',array('size'=>20,'maxlength'=>20)); ?>
 	</div>
@@ -47,13 +52,18 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'dataLectiva'); ?>
+		<?php echo $form->textField($model,'dataLectiva'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'situacio'); ?>
 		<?php echo $form->textField($model,'situacio',array('size'=>60,'maxlength'=>100)); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'descripcio'); ?>
-		<?php echo $form->textArea($model,'descripcio',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->label($model,'notes'); ?>
+		<?php echo $form->textArea($model,'notes',array('rows'=>6, 'cols'=>50)); ?>
 	</div>
 
 	<div class="row">

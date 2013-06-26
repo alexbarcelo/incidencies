@@ -23,7 +23,8 @@ class OperativaController extends Controller
         // Personalitzades per equipDirectiu com a administradors
         return array(
             array('allow',  // allow profes (per ara, els unics que fan login)
-                'actions'=>array('index','llistatProfes', 'llistatTipus','filtraAlumnes', 'llistatClasses'),
+                'actions'=>array('index','llistatProfes', 'llistatTipus',
+                    'filtraAlumnes', 'llistatClasses', 'novaIncidencia'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -71,51 +72,52 @@ class OperativaController extends Controller
             }
         }
     }
-    
+
     /**
      * AJAX function
-     * 
+     *
      * Es crida via jQuery quan hi ha una intenció (per part de l'usuari)
      * de guardar una incidència.
-     * 
+     *
      * La resposta és codi HTML
      */
     public function actionNovaIncidencia()
     {
-        if (!isset($_POST['query'])) {
-            // AJAX, bad call, let's quit
-            return;
-        } else {
-			$amonestacio = new Amonestacions();
-			$amonestacio->attributes($_POST);
-			if ($amonestacio->save()) {
-				echo <<< EOF
-<div class="alert alert-error alert-block">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <h4>Hi ha hagut un error</h4>
-    <p>Hi ha hagut un error en la creació de la incidència. Comproveu si s'ha creat
-    satisfactòriament, o torneu-la a crear.</p>
-    
-    <p>En cas de que el problema persisteixi, consulteu personal tècnic.</p>
-</div>
-EOF
-			} else {
-				$id = $amonestacio->id();
-				$hashId = friendlyHash($id);
-				echo <<< EOF
+        $amonestacio = new Amonestacions();
+        $amonestacio->attributes = $_POST;
+        if ($amonestacio->save()) {
+            $id = $amonestacio->id;
+            //$hashId = friendlyHash($id);
+            echo <<< EOF
 <div class="alert alert-success alert-block">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4>Procés completat satisfactòriament</h4>
+    <p>L'amonestació s'ha creat satisfactòriament. El seu identificador
+    per a futures referències és #$id.</p>
+
+    <p>Si desitja realitzar-hi modificacions, consulteu amb l'equip directiu</p>
+</div>
+EOF;
+        } else {
+            $errors = print_r($amonestacio->getErrors(), true);
+            echo <<< EOF
+<div class="alert alert-error alert-block">
   <h4>Hi ha hagut un error</h4>
     <p>Hi ha hagut un error en la creació de la incidència. Comproveu si s'ha creat
     satisfactòriament, o torneu-la a crear.</p>
-    
+
     <p>En cas de que el problema persisteixi, consulteu personal tècnic.</p>
 </div>
-EOF
-			}
+<div class="alert alert-block">
+  <h4>Informació tècnica</h4>
+    <p>Guardeu la següent informació en un document de text:</p>
+
+<code>$errors</code>
+
+</div>
+
+EOF;
         }
     }
-
 
     /**
      * AJAX, triggered at start.

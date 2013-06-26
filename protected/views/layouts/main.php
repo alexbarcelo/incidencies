@@ -14,6 +14,7 @@
 
     <!-- Le styles -->
     <link href="<?php echo Yii::app()->request->baseUrl; ?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.min.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;

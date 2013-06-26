@@ -24,6 +24,30 @@ $(function(){
         e.preventDefault();
     });
 
+    // datepicker, una cosa de jQuery UI per a sel·leccionar el dia
+    $.datepicker.setDefaults({
+        defaultDate: 0,
+        setDate: 0,
+        closeText: 'Tancar',
+        prevText: '&#x3c;Ant',
+        nextText: 'Seg&#x3e;',
+        currentText: 'Avui',
+        monthNames: ['Gener','Febrer','Mar&ccedil;','Abril','Maig','Juny',
+          'Juliol','Agost','Setembre','Octubre','Novembre','Desembre'],
+        monthNamesShort: ['Gen','Feb','Mar','Abr','Mai','Jun',
+          'Jul','Ago','Set','Oct','Nov','Des'],
+        dayNames: ['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'],
+        dayNamesShort: ['Dug','Dln','Dmt','Dmc','Djs','Dvn','Dsb'],
+        dayNamesMin: ['Dg','Dl','Dt','Dc','Dj','Dv','Ds'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    });
+    $( "#ap_data" ).datepicker();
+
     // Possibilitat de fer incidencies en nom d'altres responsables
     $("#ap_self").click(function(){
         $("#ap_idprofe").val("-1");
@@ -69,7 +93,7 @@ $(function(){
 
     /*
      * Generica per a totes les accions:
-     * 
+     *
      * Fem visible el que toca i tapem el que no s'ha de mostrar.
      */
     $(".accions").click(function(){
@@ -81,11 +105,11 @@ $(function(){
             $(this).parent().removeClass("active");
         });
     });
-    
+
     // similar però amb les consultes, no es mostra columna d'usuaris
     $(".consultes").click(function(){
-		$("#col_alumnes").css("display","none");
-	});
+        $("#col_alumnes").css("display","none");
+    });
 
     $("#retard").click(retard);
     $("#amonestacioOral").click(amonestacioOral);
@@ -100,20 +124,20 @@ $(function(){
 
 function retard() {
     $("#ap_legend").html("Retard <small>"+ llistat_tipus["retard"].longDescr +"</small>")
-    $("#ap_tipus").val("retard");
     $("#retard").parent().addClass("active");
+    $("#ap_tipus").val(llistat_tipus["retard"].id);
 }
 
 function amonestacioOral() {
     $("#ap_legend").html("Amonestació oral <small>"+ llistat_tipus["amonestacioOral"].longDescr +"</small>")
     $("#amonestacioOral").parent().addClass("active");
-    $("#ap_tipus").val("amonestacioOral");
+    $("#ap_tipus").val(llistat_tipus["amonestacioOral"].id);
 }
 
 function expulsio() {
     $("#ap_legend").html("Expulsió <small>"+ llistat_tipus["expulsio"].longDescr +"</small>")
     $("#expulsio").parent().addClass("active");
-    $("#ap_tipus").val("expulsio");
+    $("#ap_tipus").val(llistat_tipus["expulsio"].id);
 }
 
 /*
@@ -158,15 +182,19 @@ function setupAmonestacioTipus(data) {
  * a-là-AJAX esperant rebre la resposta satisfactòria.
  */
 function novaIncidencia() {
-	// serialitzem el valor de l'array
-	var incidencia = $("#ap_form").serializeArray();
-	
-	// si no hi ha profe responsable ("ennomde"), null-ejat
-	if ( $("#apself").is(":checked") ) {
-		unset(incidencia["ennomde"]);
-	}
-	
-	$.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
+    // carreguem el valor de la data en el camp hidden addient
+    $("#ap_datahidden").val($("#ap_data").datepicker("getDate"));
+
+    // serialitzem el valor de l'array
+    var incidencia = $("#ap_form").serializeArray();
+
+    // si no hi ha profe responsable ("ennomde"), null-ejat
+    if ( $("#apself").is(":checked") ) {
+        unset(incidencia["ennomde"]);
+    }
+
+    $.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
+    return false;
 }
 
 /*

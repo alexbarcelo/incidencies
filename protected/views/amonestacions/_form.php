@@ -22,6 +22,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'descripcio'); ?>
+		<?php echo $form->textField($model,'descripcio',array('size'=>60,'maxlength'=>100)); ?>
+		<?php echo $form->error($model,'descripcio'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'alumne'); ?>
 		<?php echo $form->textField($model,'alumne',array('size'=>20,'maxlength'=>20)); ?>
 		<?php echo $form->error($model,'alumne'); ?>
@@ -52,15 +58,21 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'dataLectiva'); ?>
+		<?php echo $form->textField($model,'dataLectiva'); ?>
+		<?php echo $form->error($model,'dataLectiva'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'situacio'); ?>
 		<?php echo $form->textField($model,'situacio',array('size'=>60,'maxlength'=>100)); ?>
 		<?php echo $form->error($model,'situacio'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'descripcio'); ?>
-		<?php echo $form->textArea($model,'descripcio',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'descripcio'); ?>
+		<?php echo $form->labelEx($model,'notes'); ?>
+		<?php echo $form->textArea($model,'notes',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model,'notes'); ?>
 	</div>
 
 	<div class="row">

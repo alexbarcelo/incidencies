@@ -13,6 +13,10 @@
 	<?php echo CHtml::encode($data->tipus); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('descripcio')); ?>:</b>
+	<?php echo CHtml::encode($data->descripcio); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('alumne')); ?>:</b>
 	<?php echo CHtml::encode($data->alumne); ?>
 	<br />
@@ -29,17 +33,21 @@
 	<?php echo CHtml::encode($data->dataRegistre); ?>
 	<br />
 
+	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('horaLectiva')); ?>:</b>
 	<?php echo CHtml::encode($data->horaLectiva); ?>
 	<br />
 
-	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('dataLectiva')); ?>:</b>
+	<?php echo CHtml::encode($data->dataLectiva); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('situacio')); ?>:</b>
 	<?php echo CHtml::encode($data->situacio); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('descripcio')); ?>:</b>
-	<?php echo CHtml::encode($data->descripcio); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('notes')); ?>:</b>
+	<?php echo CHtml::encode($data->notes); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('assignadaEscrita')); ?>:</b>

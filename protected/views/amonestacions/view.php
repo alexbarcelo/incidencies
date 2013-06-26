@@ -23,13 +23,15 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'tipus',
+		'descripcio',
 		'alumne',
 		'profe',
 		'ennomde',
 		'dataRegistre',
 		'horaLectiva',
+		'dataLectiva',
 		'situacio',
-		'descripcio',
+		'notes',
 		'assignadaEscrita',
 	),
 )); ?>
