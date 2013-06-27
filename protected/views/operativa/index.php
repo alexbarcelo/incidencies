@@ -72,6 +72,12 @@
           <div id="ap_divprofe" class="well well-small span9">
             <label>Professor responsable de la incidència:</label>
             <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
+<!-- *****************************************************************************************
+
+  Aqui posar un tick i actualitzar-ho amb javascript si el profe es posa bé o no,
+  reiniciar-lo onChange i aquestes coses. Ok?
+
+ ***************************************************************************************** -->
             <input type="hidden" id="ap_idprofe" name="ennomde">
             <span class="help-block">Comenci a introduir el nom o cognoms del professor. Asseguri's de sel·leccionar una entrada correcta de les opcions que apareixeran.</span>
           </div>

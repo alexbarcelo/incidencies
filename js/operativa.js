@@ -75,6 +75,19 @@ $(function(){
 
     $.get(URLprefix + "llistatTipus", setupAmonestacioTipus);
 
+    /*
+     * ****************************************************************
+     *  ToDo: fer que a la pantalla principal quan es carregui hi hagi
+     * una llista de coses pendents
+     *
+     * pel tutor una columna dels alumnes seus que han tingut una
+     * amonestacio ultimament; una altra columna per a alumnes seus
+     * que tenen pendents una escrita
+     *
+     * per a equip directiu la columna de escrites pendents.
+     * ****************************************************************
+     */
+
     // Accio quan s'escull un alumne
     $("#escull").click(alumneSeleccionat);
     $("#llista_alumnes").dblclick(alumneSeleccionat);
