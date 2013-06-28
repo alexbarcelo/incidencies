@@ -2,7 +2,7 @@
  * Operativa -- Javascript, jQuery & AJAX
  */
 
- URLprefix = "/yii/incidencies/index.php/operativa/"
+ URLprefix = "barcelo/yii/incidencies/index.php/operativa/"
  llistat_profes = new Array();
  llistat_tipus  = new Object();
  llistat_idtipus = new Array();
