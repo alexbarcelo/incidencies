@@ -16,6 +16,7 @@
  * @property string $situacio
  * @property string $notes
  * @property integer $assignadaEscrita
+ * @property integer $jaVista
  *
  * The followings are the available model relations:
  * @property Tipus $tipus0
@@ -59,7 +60,7 @@ class Amonestacions extends CActiveRecord
             array('notes', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, tipus, descripcio, alumne, profe, ennomde, dataRegistre, horaLectiva, dataLectiva, situacio, notes, assignadaEscrita', 'safe', 'on'=>'search'),
+            array('id, tipus, descripcio, alumne, profe, ennomde, dataRegistre, horaLectiva, dataLectiva, situacio, notes, assignadaEscrita, jaVista', 'safe', 'on'=>'search'),
         );
     }
 
@@ -97,6 +98,7 @@ class Amonestacions extends CActiveRecord
             'situacio' => 'Situacio',
             'notes' => 'Notes',
             'assignadaEscrita' => 'Assignada Escrita',
+            'jaVista' => 'Ja Vista',
         );
     }
 
@@ -123,6 +125,7 @@ class Amonestacions extends CActiveRecord
         $criteria->compare('situacio',$this->situacio,true);
         $criteria->compare('notes',$this->notes,true);
         $criteria->compare('assignadaEscrita',$this->assignadaEscrita);
+        $criteria->compare('jaVista',$this->jaVista);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
