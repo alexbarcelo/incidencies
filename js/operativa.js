@@ -207,6 +207,21 @@ function setupAmonestacioTipus(data) {
 }
 
 /*
+ * Helper function per al formatat d'alertes
+ *
+ * S'utilitza a novaIncidencia quan la comprovacio de la form dona algun
+ * error per algun camp.
+ */
+function formataAlerta(header,text) {
+    var openAlert = '<div class="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>';
+    var closeAlert = '</div>';
+    return openAlert +
+        '<strong>' + header + '</strong> ' +
+        text +
+        closeAlert;
+}
+
+/*
  * Funció de gestió de ``submit''
  *
  * Aquesta funció es crida quan hi ha un submit de l'acció principal,
@@ -221,15 +236,60 @@ function novaIncidencia() {
 
     $("#ap_datahidden").val(data.toISOString());
 
-    // Tot sembla correcte, procedim a serialitzar valors en un array
-    var incidencia = $("#ap_form").serializeArray();
+    /*
+     * Realitzem la comprovació rutinària de camps del form
+     *
+     * En cas que alguna cosa sigui incorrecta, ho fem notar
+     */
 
-    // si no hi ha profe responsable ("ennomde"), null-ejat
-    if ( $("#apself").is(":checked") ) {
-        unset(incidencia["ennomde"]);
+    // buidem les alertes antigues
+    $("#ap_alerts").html("");
+    var totOk = new Boolean(true);
+
+    // descripcio
+    var descr = new String( $("#ap_descripcio").val() );
+    if ( descr.length == 0 ) {
+        totOk = false;
+        $("#ap_alerts").append( formataAlerta (
+            'Descripció',
+            'El camp descripció no pot estar buit, escriviu-hi alguna descripció curta per a la incidència'
+        ));
     }
 
-    $.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
+    // alumne
+    if ( $("#ap_idalumne").val() < 0 ) {
+        totOk = false;
+        $("#ap_alerts").append( formataAlerta (
+            'Alumne' ,
+            'Cal que sel·leccioneu un alumne per a assignar-li la incidència. Escolliu-ne un de la llista d\'alumnes'
+        ));
+    }
+
+    // professor responsable
+    if (! $("#ap_self").is(":checked") ) {
+        if ( $("#ap_idprofe").val() < 0 ) {
+            totOk = false;
+            $("#ap_alerts").append( formataAlerta (
+                'Professor responsable' ,
+                'Si no sou el professor responsable, sel·leccioneu correctament un professor existent.'
+            ));
+        }
+    }
+
+    if (totOk) {
+        /*
+         * Tot sembla correcte, procedim a serialitzar valors en un array
+         */
+        var incidencia = $("#ap_form").serializeArray();
+
+        // si no hi ha d'haver profe responsable ("ennomde"), null-ejat
+        if ( $("#ap_self").is(":checked") ) {
+            unset(incidencia["ennomde"]);
+        }
+
+        $.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
+    }
+
     return false;
 }
 
