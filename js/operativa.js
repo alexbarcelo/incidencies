@@ -266,7 +266,9 @@ function novaIncidencia() {
     }
 
     // professor responsable
+    // (aqui fem el control sobre el atribut "name":"ennomde")
     if (! $("#ap_self").is(":checked") ) {
+        $("#ap_idprofe").attr("name", "ennomde");
         if ( $("#ap_idprofe").val() < 0 ) {
             totOk = false;
             $("#ap_alerts").append( formataAlerta (
@@ -274,6 +276,8 @@ function novaIncidencia() {
                 'Si no sou el professor responsable, sel·leccioneu correctament un professor existent.'
             ));
         }
+    }   else {
+        $("#ap_idprofe").removeAttr("name");
     }
 
     if (totOk) {
@@ -281,12 +285,6 @@ function novaIncidencia() {
          * Tot sembla correcte, procedim a serialitzar valors en un array
          */
         var incidencia = $("#ap_form").serializeArray();
-
-        // si no hi ha d'haver profe responsable ("ennomde"), null-ejat
-        if ( $("#ap_self").is(":checked") ) {
-            unset(incidencia["ennomde"]);
-        }
-
         $.post(URLprefix + "novaIncidencia", incidencia, novaI_CB);
     }
 
