@@ -25,6 +25,9 @@
       }
 
       @media (max-width: 980px) {
+        body {
+            padding-top: 0px;
+        }
         /* Enable use of floated navbar text */
         .navbar-text.pull-right {
           float: none;
