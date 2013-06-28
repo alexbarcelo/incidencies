@@ -72,8 +72,11 @@
         <div class="row-fluid">
           <div id="ap_divprofe" class="well well-small span9">
             <label>Professor responsable de la incidència:</label>
-            <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
-            <i id="ap_checkprofe" class="icon-remove"></i>
+            <div class="input-prepend input-append">
+              <button class="btn" type="button" id="ap_modificaprofe">Modifica</button>
+              <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
+              <span class="add-on"><i id="ap_checkprofe" class="icon-remove"></i></span>
+            </div>
             <input type="hidden" id="ap_idprofe" name="ennomde">
             <span class="help-block">Comenci a introduir el nom o cognoms del professor. Asseguri's de sel·leccionar una entrada correcta de les opcions que apareixeran.</span>
           </div>

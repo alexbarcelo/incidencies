@@ -92,7 +92,7 @@ class OperativaController extends Controller
 <div class="alert alert-success alert-block">
   <h4>Procés completat satisfactòriament</h4>
     <p>L'amonestació s'ha creat satisfactòriament. El seu identificador
-    per a futures referències és #$id.</p>
+    per a futures referències és <strong>#$id</strong></p>
 
     <p>Si desitja realitzar-hi modificacions, consulteu amb l'equip directiu</p>
 </div>

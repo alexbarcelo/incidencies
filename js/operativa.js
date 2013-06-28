@@ -7,9 +7,6 @@
  llistat_tipus  = new Object();
  llistat_idtipus = new Array();
 
- // Variable per a GUI i check gràfic
- profeTrigger = new Boolean();
-
 $(function(){
     // Seleccionem link actiu del menú principal
     $("#operativa").addClass("active");
@@ -54,12 +51,15 @@ $(function(){
     // Possibilitat de fer incidencies en nom d'altres responsables
     $("#ap_self").click(function(){
         $("#ap_idprofe").val("-1");
-        $("#ap_profe").val("");
+        $("#ap_profe").val("").removeAttr("disabled");
         if ($(this).is(":checked")) {
             $("#ap_divprofe").slideUp("slow");
         } else {
             $("#ap_divprofe").slideDown("slow");
         }
+        $("#ap_checkprofe").addClass("icon-remove").removeClass("icon-ok");
+        $("#ap_modificaprofe").attr("disabled","");
+
     });
     // estat inicial amagat
     $("#ap_divprofe").slideUp("slow");
@@ -73,26 +73,22 @@ $(function(){
         updater: function(item) {
             $("#ap_idprofe").val(map[item].id);
             // fem el tick, per indicar que està bé
-            $("#ap_checkprofe").removeClass("icon-remove");
-            $("#ap_checkprofe").addClass("icon-ok");
+            $("#ap_checkprofe").removeClass("icon-remove").addClass("icon-ok");
+            $("#ap_modificaprofe").val("").removeAttr("disabled");
+            $("#ap_profe").attr("disabled","");
             profeTrigger = true;
             // aixo ara cridarà a el event change, on es comprovara profeTrigger
             return item;
         }
     });
     // mes un event per a canvis (invalidar informació del profe
-    $("#ap_profe").change(function() {
-        if (profeTrigger) {
-            // provenim d'un autocomplete, tot esta ok
-            profeTrigger = false;
-        } else {
-            // l'usuari ha canviat alguna cosa, resetegem
-            $("#ap_idprofe").val("-1");
-            $("#ap_checkprofe").addClass("icon-remove");
-            $("#ap_checkprofe").removeClass("icon-ok");
-        }
+    $("#ap_modificaprofe").click(function() {
+        // resetegem per a que l'usuari pugui canviar el profe
+        $("#ap_idprofe").val("-1");
+        $("#ap_checkprofe").addClass("icon-remove").removeClass("icon-ok");
+        $("#ap_profe").val("").removeAttr("disabled");
+        $(this).attr("disabled","");
     });
-
 
     $.get(URLprefix + "llistatTipus", setupAmonestacioTipus);
 
