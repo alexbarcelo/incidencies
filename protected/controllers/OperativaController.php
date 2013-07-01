@@ -183,17 +183,24 @@ EOF;
      */
     public function actionConsulta($tipus, $id=0)
     {
-		echo "consulta <br>";
-		switch ($tipus) {
-			case "meves":
-				echo "meves-placeholder " . $id;
+		$condition = "";
+		$params = array();
+        
+        switch ($tipus) {
+            case "meves":
+                $condition = "ennomde=:ennomde";
+                $params[":ennomde"] = Yii::app()->user->getState('uid',0);
 				break;
 			case "alumne":
-				echo "alumne-placeholder " . $id;
+                $condition = "alumne=:alumne";
+                $params[":alumne"] = $id;
 				break;
+                $condition = "alumne=:alumne";
 			case "classe":
-				echo "classe-placeholder " . $id;
+                $data = Amonestacions::model()->with('alumne0')->findAll();
 				break;
 		}
+        header('Content-type: application/json');
+        print_r (CJSON::encode($data));
 	}
 }
