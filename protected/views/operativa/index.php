@@ -59,35 +59,33 @@
         <input type="hidden" name="profe" value="<?php echo Yii::app()->user->getState('uid',0); ?>">
         <legend id="ap_legend">Legend</legend>
         <div id="ap_alerts"></div>
-        <label>Introduiu una breu descripció</label>
-        <input type="text" class="input-large" name="descripcio" id="ap_descripcio" placeholder="Descripció">
-        <label>Alumne</label>
-        <input type="text" class="input-medium" id="ap_alumne" disabled>
-        <input type="hidden" id="ap_idalumne" name="alumne" value="-1">
-        <span class="help-block">Sel·leccioneu-lo al menú lateral</span>
-        <label class="checkbox">
-          <input type="checkbox" id="ap_self" checked>Sóc el responsable de la incidència
-        </label>
-
-        <div class="row-fluid">
-          <div id="ap_divprofe" class="well well-small span9">
-            <label>Professor responsable de la incidència:</label>
-            <div class="input-prepend input-append">
-              <button class="btn" type="button" id="ap_modificaprofe">Modifica</button>
-              <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
-              <span class="add-on"><i id="ap_checkprofe" class="icon-remove"></i></span>
-            </div>
-            <input type="hidden" id="ap_idprofe" name="ennomde">
-            <span class="help-block">Comenci a introduir el nom o cognoms del professor. Asseguri's de sel·leccionar una entrada correcta de les opcions que apareixeran.</span>
-          </div>
-        </div> <!-- /row -->
-
         <div class="row-fluid">
           <div class="span6">
-            <label>Situació:</label>
-              <input type="text" class="span12" name="situacio" id="ap_situacio" placeholder="Lloc, aula, espai...">
-            <label>Notes addicionals per a la incidència</label>
+            <label>Descripció</label>
             <textarea rows="3" id="ap_notes" name="notes" class="span12" style="resize: vertical;"></textarea>
+            <span class="help-block">Introduïu opcionalment una descripció (140 caràcters)</span>
+            <label>Alumne</label>
+            <input type="text" class="input-medium" id="ap_alumne" disabled>
+            <input type="hidden" id="ap_idalumne" name="alumne" value="-1">
+            <span class="help-block">Sel·leccioneu-lo al menú lateral</span>
+            <label class="checkbox">
+              <input type="checkbox" id="ap_self" checked>Sóc el responsable de la incidència
+            </label>
+
+            <div class="row-fluid">
+              <div id="ap_divprofe" class="well well-small span11">
+                <label>Professor responsable de la incidència:</label>
+                <div class="input-prepend input-append span12">
+                  <button class="btn" type="button" id="ap_modificaprofe">Modifica</button>
+                  <input type="text" id="ap_profe" data-provide="typeahead" autocomplete="off">
+                  <span class="add-on"><i id="ap_checkprofe" class="icon-remove"></i></span>
+                </div>
+                <input type="hidden" id="ap_idprofe" name="ennomde">
+                <span class="help-block">Comenci a introduir el nom o cognoms del professor. Asseguri's de sel·leccionar una entrada correcta de les opcions que apareixeran.</span>
+              </div>
+            </div> <!-- /row -->
+            <label>Situació:</label>
+            <input type="text" class="span12" name="situacio" id="ap_situacio" placeholder="Lloc, aula, espai...">
           </div>
           <div class="span6">
             <label>Hora lectiva:</label>
@@ -100,10 +98,9 @@
               <option value=6>12:30</option>
               <option value=7>13:30</option>
               <option value=8>14:30</option>
-              <option value=9>15:30</option>
-              <option value=10>16:30</option>
-              <option value=11>17:30</option>
-              <option value=12>Altres</option>
+              <option value=9>15:00</option>
+              <option value=10>16:00</option>
+              <option value=11>Altres</option>
             </select>
             <label>Dia:</label>
             <div id="ap_data"></div>

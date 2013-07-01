@@ -243,12 +243,12 @@ function novaIncidencia() {
     var totOk = new Boolean(true);
 
     // descripcio
-    var descr = new String( $("#ap_descripcio").val() );
-    if ( descr.length == 0 ) {
+    var descr = new String( $("#ap_notes").val() );
+    if ( descr.length > 140 ) {
         totOk = false;
         $("#ap_alerts").append( formataAlerta (
             'Descripció',
-            'El camp descripció no pot estar buit, escriviu-hi alguna descripció curta per a la incidència'
+            'La descripció no pot sobrepassar els 140 caràcters'
         ));
     }
 
