@@ -24,7 +24,8 @@ class OperativaController extends Controller
         return array(
             array('allow',  // allow profes (per ara, els unics que fan login)
                 'actions'=>array('index','llistatProfes', 'llistatTipus',
-                    'filtraAlumnes', 'llistatClasses', 'novaIncidencia'),
+                    'filtraAlumnes', 'llistatClasses', 'novaIncidencia',
+                    'consulta'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -173,4 +174,26 @@ EOF;
         header('Content-type: application/json');
         echo CJSON::encode($data);
     }
+    
+    /**
+     * Funcio generica per a obtenir informacio
+     * 
+     * Es retorna un JSON que el Javascript triturarà addientment.
+     * En funció del paràmetre ID que es passarà a la consulta.
+     */
+    public function actionConsulta($tipus, $id=0)
+    {
+		echo "consulta <br>";
+		switch ($tipus) {
+			case "meves":
+				echo "meves-placeholder " . $id;
+				break;
+			case "alumne":
+				echo "alumne-placeholder " . $id;
+				break;
+			case "classe":
+				echo "classe-placeholder " . $id;
+				break;
+		}
+	}
 }
