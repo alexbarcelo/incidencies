@@ -6,7 +6,6 @@
  * The followings are the available columns in table 'amonestacions':
  * @property string $id
  * @property integer $tipus
- * @property string $descripcio
  * @property string $alumne
  * @property integer $profe
  * @property integer $ennomde
@@ -53,14 +52,14 @@ class Amonestacions extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('tipus, descripcio, alumne, profe, dataLectiva', 'required'),
+            array('tipus, alumne, profe, dataLectiva', 'required'),
             array('tipus, profe, ennomde, horaLectiva, assignadaEscrita', 'numerical', 'integerOnly'=>true),
-            array('descripcio, situacio', 'length', 'max'=>100),
+            array('situacio', 'length', 'max'=>100),
             array('alumne', 'length', 'max'=>20),
-            array('notes', 'safe'),
+            array('notes', 'length', 'max'=>150),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, tipus, descripcio, alumne, profe, ennomde, dataRegistre, horaLectiva, dataLectiva, situacio, notes, assignadaEscrita, jaVista', 'safe', 'on'=>'search'),
+            array('id, tipus, alumne, profe, ennomde, dataRegistre, horaLectiva, dataLectiva, situacio, notes, assignadaEscrita, jaVista', 'safe', 'on'=>'search'),
         );
     }
 
@@ -88,7 +87,6 @@ class Amonestacions extends CActiveRecord
         return array(
             'id' => 'ID',
             'tipus' => 'Tipus',
-            'descripcio' => 'Descripcio',
             'alumne' => 'Alumne',
             'profe' => 'Profe',
             'ennomde' => 'Ennomde',
@@ -115,7 +113,6 @@ class Amonestacions extends CActiveRecord
 
         $criteria->compare('id',$this->id,true);
         $criteria->compare('tipus',$this->tipus);
-        $criteria->compare('descripcio',$this->descripcio,true);
         $criteria->compare('alumne',$this->alumne,true);
         $criteria->compare('profe',$this->profe);
         $criteria->compare('ennomde',$this->ennomde);

@@ -57,6 +57,7 @@
       <fieldset>
         <input type="hidden" name="tipus" id="ap_tipus" value="">
         <input type="hidden" name="profe" value="<?php echo Yii::app()->user->getState('uid',0); ?>">
+        <script>profeAutor="<?php echo Yii::app()->user->getState('uid',0); ?>"</script>
         <legend id="ap_legend">Legend</legend>
         <div id="ap_alerts"></div>
         <div class="row-fluid">
