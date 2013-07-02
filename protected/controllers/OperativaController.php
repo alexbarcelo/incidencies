@@ -174,33 +174,69 @@ EOF;
         header('Content-type: application/json');
         echo CJSON::encode($data);
     }
-    
+
     /**
      * Funcio generica per a obtenir informacio
-     * 
+     *
      * Es retorna un JSON que el Javascript triturarà addientment.
      * En funció del paràmetre ID que es passarà a la consulta.
      */
-    public function actionConsulta($tipus, $id=0)
+    public function actionConsulta($tipus, $id=null)
     {
-		$condition = "";
-		$params = array();
-        
+        if (!isset($id)) {
+            $id = Yii::app()->user->getState('uid',0);
+        }
         switch ($tipus) {
             case "meves":
-                $condition = "ennomde=:ennomde";
-                $params[":ennomde"] = Yii::app()->user->getState('uid',0);
-				break;
-			case "alumne":
-                $condition = "alumne=:alumne";
-                $params[":alumne"] = $id;
-				break;
-                $condition = "alumne=:alumne";
-			case "classe":
-                $data = Amonestacions::model()->with('alumne0')->findAll();
-				break;
-		}
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'ennomde=:ennomde',
+                    'params'    => array(":ennomde"=>$id),
+                ));
+                break;
+            case "alumne":
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'alumne=:alumne',
+                    'params'    => array(":alumne"=>$id),
+                ));
+            case "classe":
+                $data = Amonestacions::model()->with( array(
+                    'alumne0' => array(
+                        'condition'=>"classe=:id",
+                        'params'   => array(":id"=>$id),
+                    ),
+                ))->findAll();
+                break;
+            case "profe":
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'ennomde=:ennomde',
+                    'params'    => array(":ennomde"=>$id),
+                ));
+                break;
+            case "novistes":
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'jaVista=0 AND ennomde=:ennomde',
+                    'params'    => array(":ennomde"=>$id),
+                ));
+                break;
+            case "pendents":
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'jaVista=0',
+                ));
+                break;
+
+            /**
+             * Encara s'ha d'acabar
+             *
+            case "acumulades":
+                $data = Amonestacions::model()->findAll( array(
+                    'condition' => 'assignadaEscrita=0',
+                ));
+                break;
+             */
+        }
+
+        // Si funcionem per JavaScript, tornem un JSON
         header('Content-type: application/json');
         print_r (CJSON::encode($data));
-	}
+    }
 }
