@@ -10,8 +10,9 @@
       <li><a id="amonestacioOral" class="accions" href="#">Amonestació oral</a></li>
       <li><a id="expulsio" class="accions" href="#">Expulsió</a></li>
       <li class="nav-header">Consulta</li>
-      <li><a id="lesmeves" href="#">Les meves</a></li>
-      <li><a id="consulta" href="#">Per classes i alumnes</a></li>
+      <li><a id="meves" href="#">Les meves</a></li>
+      <li><a id="alumnes" href="#">Per alumnes</a></li>
+      <li><a id="classes" href="#">Per classes</a></li>
     </ul>
   </div><!--/.well -->
 

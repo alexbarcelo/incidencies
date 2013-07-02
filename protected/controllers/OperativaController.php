@@ -188,7 +188,11 @@ EOF;
         }
         switch ($tipus) {
             case "meves":
-                $data = Amonestacions::model()->findAll( array(
+                $data = Amonestacions::model()->with( array(
+                    'alumne0' => array (
+                        'select' => array('nom','cognom'),
+                    ),
+                ))->findAll( array(
                     'condition' => 'ennomde=:ennomde',
                     'params'    => array(":ennomde"=>$id),
                 ));
@@ -212,15 +216,14 @@ EOF;
                     'params'    => array(":ennomde"=>$id),
                 ));
                 break;
-            case "novistes":
-                $data = Amonestacions::model()->findAll( array(
-                    'condition' => 'jaVista=0 AND ennomde=:ennomde',
-                    'params'    => array(":ennomde"=>$id),
-                ));
-                break;
-            case "pendents":
-                $data = Amonestacions::model()->findAll( array(
-                    'condition' => 'jaVista=0',
+            case "novestutor":
+                $data = Amonestacions::model()->with( array(
+                    'alumne0' => array(
+                        'condition'=>"classe=:id",
+                        'params'   => array(":id"=>$id),
+                    ),
+                ))->findAll(array(
+                    'condition' => "jaVista=0",
                 ));
                 break;
 
