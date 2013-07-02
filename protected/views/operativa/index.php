@@ -118,5 +118,6 @@
 <!-- Le more javascript
 ================================================== -->
 <!-- Operativa-specific -->
+<script>URLprefix = "<?php echo Yii::app()->createUrl('operativa'); ?>/";</script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.min.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/operativa.js"></script>

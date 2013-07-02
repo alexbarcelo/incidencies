@@ -2,11 +2,11 @@
  * Operativa -- Javascript, jQuery & AJAX
  */
 
- URLprefix = "/barcelo/yii/incidencies/index.php/operativa/"
  llistat_profes = new Array();
  llistat_tipus  = new Object();
  llistat_idtipus = new Array();
  // variable ``profeAutor'' està definida amb php al index.php addient
+ // variable ``URLprefix'' està definida amb php al index.php addient
 
 $(function(){
     // Seleccionem link actiu del menú principal
