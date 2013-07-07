@@ -143,8 +143,9 @@ $(function(){
     });
 
     $("#retard").click(retard);
-    $("#amonestacioOral").click(amonestacioOral);
     $("#expulsio").click(expulsio);
+    $("#amonestacioOral").click(amonestacioOral);
+    $("#amonestacioEscrita").click(amonestacioEscrita);
 });
 
 /* *********************************************************************
@@ -159,16 +160,22 @@ function retard() {
     $("#ap_tipus").val(llistat_tipus["retard"].id);
 }
 
+function expulsio() {
+    $("#ap_legend").html("Expulsió <small>"+ llistat_tipus["expulsio"].longDescr +"</small>")
+    $("#expulsio").parent().addClass("active");
+    $("#ap_tipus").val(llistat_tipus["expulsio"].id);
+}
+
 function amonestacioOral() {
     $("#ap_legend").html("Amonestació oral <small>"+ llistat_tipus["amonestacioOral"].longDescr +"</small>")
     $("#amonestacioOral").parent().addClass("active");
     $("#ap_tipus").val(llistat_tipus["amonestacioOral"].id);
 }
 
-function expulsio() {
-    $("#ap_legend").html("Expulsió <small>"+ llistat_tipus["expulsio"].longDescr +"</small>")
-    $("#expulsio").parent().addClass("active");
-    $("#ap_tipus").val(llistat_tipus["expulsio"].id);
+function amonestacioEscrita() {
+    $("#ap_legend").html("Amonestació escrita <small>"+ llistat_tipus["amonestacioEscrita"].longDescr +"</small>")
+    $("#amonestacioEscrita").parent().addClass("active");
+    $("#ap_tipus").val(llistat_tipus["amonestacioEscrita"].id);
 }
 
 /*

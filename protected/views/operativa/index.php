@@ -7,8 +7,9 @@
     <ul class="nav nav-list">
       <li class="nav-header">Nova entrada</li>
       <li><a id="retard" class="accions" href="#">Retard</a></li>
-      <li><a id="amonestacioOral" class="accions" href="#">Amonestació oral</a></li>
       <li><a id="expulsio" class="accions" href="#">Expulsió</a></li>
+      <li><a id="amonestacioOral" class="accions" href="#">Amonestació oral</a></li>
+      <li><a id="amonestacioEscrita" class="accions" href="#">Amonestació escrita</a></li>
       <li class="nav-header">Consulta</li>
       <li><a id="meves" href="#">Les meves</a></li>
       <li><a id="alumnes" href="#">Per alumnes</a></li>
@@ -47,7 +48,8 @@
 </div><!--/span-->
 
 <div class="span9">
-  <div class="hero-unit visible-desktop">
+  <!-- Una hero-unit un pèl més petita, marges reduïts-->
+  <div class="hero-unit visible-desktop" style="padding: 10px; margin-bottom: 10px">
     <h1>Operativa</h1>
     <p>Des d'aquí podreu introduir i consultar entrades de la base de dades d'incidències.</p>
   </div>
