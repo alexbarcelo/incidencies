@@ -12,8 +12,8 @@
       <li><a id="amonestacioEscrita" class="accions" href="#">Amonestació escrita</a></li>
       <li class="nav-header">Consulta</li>
       <li><a id="meves" class="consultes" href="#">Les meves</a></li>
-      <li><a id="alumnes" class="consultes" href="#">Per alumnes</a></li>
-      <li><a id="classes" class="consultes" href="#">Per classes</a></li>
+      <li><a id="peralumnes" class="consultes" href="#">Per alumnes</a></li>
+      <li><a id="perclasses" class="consultes" href="#">Per classes</a></li>
     </ul>
   </div><!--/.well -->
 
@@ -115,6 +115,11 @@
       </fieldset>
     </form>
   </div><!-- /#accioPrincipal-->
+  <div class="alert alert-block alert-info" id="consultaAlumnes" style="display: none">
+    <h4>Sel·lecció d'alumne</h4>
+    Realitzeu la tria de l'alumne al bloc lateral per a continuar la consulta
+    d'incidències.
+  </div>
 </div><!--/span-->
 
 <!-- Le more javascript

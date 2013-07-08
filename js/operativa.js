@@ -15,9 +15,9 @@ $(function(){
 
     // Amaguem certes coses per defecte
     $("#filtres").css("display","none");
-    $("#accioPrincipal").css("display","none");
-    $("#respostaPrincipal").css("display","none");
-    $("#col_meves").css("display","none");
+
+    // Utilitzem la funcio helper d'inicialitzacio per l'estat de certs blocs
+    preparaPagina();
 
     // Sistema de slidetoggle per als filtres d'alumnes
     $("#filtresflip").click(function(e){
@@ -129,25 +129,42 @@ $(function(){
      * Fem visible el que toca i tapem el que no s'ha de mostrar.
      */
     $(".accions").click(function(){
+        preparaPagina();
         $("#accioPrincipal").css("display","inherit");
-        $("#col_alumnes").css("display","inherit");
-        $("#respostaPrincipal").css("display","none");
-        $("#col_meves").css("display","none");
-        $(".accions").each(function() {
-            $(this).parent().removeClass("active");
-        });
     });
 
     // similar però amb les consultes, no es mostra columna d'usuaris
     $(".consultes").click(function(){
-        $("#col_alumnes").css("display","none");
+        preparaPagina();
     });
 
     $("#retard").click(retard);
     $("#expulsio").click(expulsio);
     $("#amonestacioOral").click(amonestacioOral);
     $("#amonestacioEscrita").click(amonestacioEscrita);
+
+    $("#meves").click(meves);
+    $("#peralumnes").click(perAlumnes);
+    $("#perclasses").click(perClasses);
 });
+
+/*
+ * Inicialitzem les tipiques variables i displays
+ * per quan hi ha algun click o canvi de pantalla
+ */
+function preparaPagina () {
+    $("#consultaAlumnes").css("display","none");
+    $("#col_alumnes").css("display","inherit");
+    $("#accioPrincipal").css("display","none");
+    $("#respostaPrincipal").css("display","none");
+    $("#col_meves").css("display","none");
+    $(".accions").each(function() {
+        $(this).parent().removeClass("active");
+    });
+    $(".consultes").each(function() {
+        $(this).parent().removeClass("active");
+    });
+}
 
 /* *********************************************************************
  * Funcions per a actualitzar la informació de
@@ -192,6 +209,28 @@ function alumneSeleccionat() {
 
     }
 }
+
+/* *********************************************************************
+ * Funcions per a reaccionar davant d'una consulta
+ * (menú de navegació de la columna, entrades de consulta)
+ *
+ * Es fa un heavy ús de modal i AJAX per a realitzar les consultes i
+ * processar el JSON que es torna
+ * ****************************************************************** */
+
+function meves() {
+    $("#meves").parent().addClass("active");
+}
+
+function perAlumnes () {
+    $("#peralumnes").parent().addClass("active");
+    $("#consultaAlumnes").css("display","inherit");
+}
+
+function perClasses() {
+    $("#perclasses").parent().addClass("active");
+}
+
 
 /*
  * Inicialitzacio de les variables globals per al typeahead
