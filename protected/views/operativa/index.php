@@ -48,7 +48,7 @@
 
 <div class="span9">
   <!-- Una hero-unit un pèl més petita, marges reduïts-->
-  <div class="hero-unit visible-desktop" style="padding: 10px; margin-bottom: 10px">
+  <div class="hero-unit hidden-phone" style="padding: 10px; margin-bottom: 10px">
     <h1>Operativa</h1>
     <p>Des d'aquí podreu introduir i consultar entrades de la base de dades d'incidències.</p>
   </div>
