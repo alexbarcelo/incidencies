@@ -11,9 +11,9 @@
       <li><a id="amonestacioOral" class="accions" href="#">Amonestació oral</a></li>
       <li><a id="amonestacioEscrita" class="accions" href="#">Amonestació escrita</a></li>
       <li class="nav-header">Consulta</li>
-      <li><a id="meves" href="#">Les meves</a></li>
-      <li><a id="alumnes" href="#">Per alumnes</a></li>
-      <li><a id="classes" href="#">Per classes</a></li>
+      <li><a id="meves" class="consultes" href="#">Les meves</a></li>
+      <li><a id="alumnes" class="consultes" href="#">Per alumnes</a></li>
+      <li><a id="classes" class="consultes" href="#">Per classes</a></li>
     </ul>
   </div><!--/.well -->
 
@@ -36,9 +36,8 @@
         </fieldset>
       </div>
     </div><!--/.well -->
-
     <select class="span12" id="llista_alumnes" size=10></select>
-    <p><button id="escull" class="span6">Escull l'alumne</button></p>
+    <p><button id="escull" class="span9">Escull l'alumne</button></p>
     <p> &nbsp </p>
   </div><!--/.well col_alumnes-->
 

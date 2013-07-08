@@ -5,6 +5,7 @@
  llistat_profes = new Array();
  llistat_tipus  = new Object();
  llistat_idtipus = new Array();
+ consultingStatus = false;
  // variable ``profeAutor'' està definida amb php al index.php addient
  // variable ``URLprefix'' està definida amb php al index.php addient
 
@@ -187,6 +188,9 @@ function alumneSeleccionat() {
     al = $("#llista_alumnes option:selected");
     $("#ap_idalumne").val(al.val());
     $("#ap_alumne").val(al.text());
+    if (consultingStatus) {
+
+    }
 }
 
 /*
