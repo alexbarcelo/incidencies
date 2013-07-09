@@ -236,8 +236,9 @@ function alumneSeleccionat() {
         $("#respostaPrincipal").css("display","inherit")
           .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
         // i procedim a fer la query i aquestes coses
-        $.get(URLprefix + "consulta/alumne/" + al.val() ,
-          processaConsulta );
+        $.get(URLprefix + "consulta/alumne/" + al.val() , function(data) {
+			processaConsulta(data, ["tipus", "profe", "datalectiva"], ["situacio", "notes"]);
+		});
     }
 }
 
@@ -362,20 +363,39 @@ function novaI_CB(data) {
  * data és la variable JSON que conté el contingut de la resposta
  * L'objectiu és mostrar una taula correctament formatada
  */
-function processaConsulta(data) {
-    processat = "";
-
+function processaConsulta(data, campsCapcalera, campsInterns) {
+    var processat = '<div class="accordion" id="accordionIncidencies">';
+	
     /*
      * Procedim a processar "data" i a fer un html addient per a
      * tota la informació rebuda.
      */
-    //... ToDo
+    $.each(data, function (index, value) {
+		processat += '<div class="accordion-group">';
+		processat += '<div class="accordion-heading">';
+		processat += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionIncidencies" href="#collapse' + 
+			index + '">';
+		$.each(campsCapcalera, function (indexC, valueC) {
+			processat += '<span class="col' + valueC + '">' + 
+				value[valueC] + '</span>';
+		});
+		processat += '</a></div> <!-- accordion-heading -->';
+		processat += '<div id="collapse' + 
+			index + '" class="accordion-body collapse">';
+		processat += '<div class="accordion-inner">';
+		processat += "hello world";
+		processat += '</div><!-- accordion-inner -->';
+		processat += '</div><!-- accordion-body -->';
+		processat += '</div><!-- accordion-group -->';
+	});
+    
+    // tanquem
+    processat += '</div> <!-- #accordionIncidencies -->';
 
     // Volcat de tota l'estructura html al div central d'informació
     $("#respostaPrincipal").html(processat);
 
     // Event handlers per al codi html que acabem de generar:
-    //... ToDo
 }
 
 /*
