@@ -164,6 +164,7 @@ function preparaPagina () {
     $(".consultes").each(function() {
         $(this).parent().removeClass("active");
     });
+    consultingStatus = false;
 }
 
 /* *********************************************************************
@@ -196,20 +197,6 @@ function amonestacioEscrita() {
     $("#ap_tipus").val(llistat_tipus["amonestacioEscrita"].id);
 }
 
-/*
- * Quan es selecciona un alumne (doble click o btn adequat)
- *
- * S'actualitza la informació de la form, visible i no visible
- */
-function alumneSeleccionat() {
-    al = $("#llista_alumnes option:selected");
-    $("#ap_idalumne").val(al.val());
-    $("#ap_alumne").val(al.text());
-    if (consultingStatus) {
-
-    }
-}
-
 /* *********************************************************************
  * Funcions per a reaccionar davant d'una consulta
  * (menú de navegació de la columna, entrades de consulta)
@@ -225,12 +212,34 @@ function meves() {
 function perAlumnes () {
     $("#peralumnes").parent().addClass("active");
     $("#consultaAlumnes").css("display","inherit");
+    consultingStatus = true;
 }
 
 function perClasses() {
     $("#perclasses").parent().addClass("active");
 }
 
+/*
+ * Quan es selecciona un alumne (doble click o btn adequat)
+ *
+ * S'actualitza la informació de la form, visible i no visible
+ */
+function alumneSeleccionat() {
+    // per defecte, carreguem el valor al camp corresponent
+    al = $("#llista_alumnes option:selected");
+    $("#ap_idalumne").val(al.val());
+    $("#ap_alumne").val(al.text());
+
+    if (consultingStatus) {
+        // si estem en consulta "per alumnes", llavors treiem l'alert
+        $("#consultaAlumnes").css("display","none");
+        $("#respostaPrincipal").css("display","inherit")
+          .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
+        // i procedim a fer la query i aquestes coses
+        $.get(URLprefix + "consulta/alumne/" + al.val() ,
+          processaConsulta );
+    }
+}
 
 /*
  * Inicialitzacio de les variables globals per al typeahead
@@ -346,6 +355,28 @@ function novaI_CB(data) {
     $("#respostaPrincipal").html(data);
 }
 
+/*
+ * Aquesta funció es crida com a callback davant de crides AJAX de
+ * consulta.
+ *
+ * data és la variable JSON que conté el contingut de la resposta
+ * L'objectiu és mostrar una taula correctament formatada
+ */
+function processaConsulta(data) {
+    processat = "";
+
+    /*
+     * Procedim a processar "data" i a fer un html addient per a
+     * tota la informació rebuda.
+     */
+    //... ToDo
+
+    // Volcat de tota l'estructura html al div central d'informació
+    $("#respostaPrincipal").html(processat);
+
+    // Event handlers per al codi html que acabem de generar:
+    //... ToDo
+}
 
 /*
  * Acció de filtratge d'alumnes
