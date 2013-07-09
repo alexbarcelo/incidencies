@@ -152,6 +152,9 @@ EOF;
             $data[] = $entry;
         }
         header('Content-type: application/json');
+        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Pragma: no-cache'); // HTTP 1.0.
+        header('Expires: 0'); // Proxies.
         echo CJSON::encode($data);
     }
 
@@ -172,6 +175,9 @@ EOF;
             $data[] = $entry;
         }
         header('Content-type: application/json');
+        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Pragma: no-cache'); // HTTP 1.0.
+        header('Expires: 0'); // Proxies.
         echo CJSON::encode($data);
     }
 
@@ -198,10 +204,27 @@ EOF;
                 ));
                 break;
             case "alumne":
-                $data = Amonestacions::model()->findAll( array(
+                $query = Amonestacions::model()->with(array('tipus0','profe0','profe1'))
+                ->findAll( array(
                     'condition' => 'alumne=:alumne',
                     'params'    => array(":alumne"=>$id),
                 ));
+                $data = array();
+                foreach ($query as $row) {
+                    $data[] = array_merge (
+                        //['ennomde': $query->getAttribute
+                        $row->getAttributes() ,
+                        array(
+                            'nomProfe' => $row->profe0->getAttribute('nom') ,
+                            'ennomdeProfe' => $row->profe1->getAttribute('nom'),
+                        ),
+                        $row->tipus0->getAttributes(array('abrev'))
+                    );
+                }
+                //echo print_r($data);
+                //return;
+                //$data = $data[0]->alumne0;
+                break;
             case "classe":
                 $data = Amonestacions::model()->with( array(
                     'alumne0' => array(
@@ -238,8 +261,10 @@ EOF;
              */
         }
 
-        // Si funcionem per JavaScript, tornem un JSON
         header('Content-type: application/json');
+        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Pragma: no-cache'); // HTTP 1.0.
+        header('Expires: 0'); // Proxies.
         print_r (CJSON::encode($data));
     }
 }

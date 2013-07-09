@@ -96,6 +96,7 @@ class Profes extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'amonestacions' => array(self::HAS_MANY, 'Amonestacions', 'profe'),
+			'amonestacions1' => array(self::HAS_MANY, 'Amonestacions', 'ennomde'),
 			'tutor0' => array(self::BELONGS_TO, 'Classes', 'tutor'),
 		);
 	}

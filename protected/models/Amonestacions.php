@@ -74,6 +74,7 @@ class Amonestacions extends CActiveRecord
             'tipus0' => array(self::BELONGS_TO, 'Tipus', 'tipus'),
             'alumne0' => array(self::BELONGS_TO, 'Alumnes', 'alumne'),
             'profe0' => array(self::BELONGS_TO, 'Profes', 'profe'),
+            'profe1' => array(self::BELONGS_TO, 'Profes', 'ennomde'),
             'relacionsAmonestacions' => array(self::HAS_MANY, 'RelacionsAmonestacions', 'petita'),
             'relacionsAmonestacions1' => array(self::HAS_MANY, 'RelacionsAmonestacions', 'escrita'),
         );
