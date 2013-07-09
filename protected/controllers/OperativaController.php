@@ -212,18 +212,14 @@ EOF;
                 $data = array();
                 foreach ($query as $row) {
                     $data[] = array_merge (
-                        //['ennomde': $query->getAttribute
                         $row->getAttributes() ,
                         array(
                             'nomProfe' => $row->profe0->getAttribute('nom') ,
                             'ennomdeProfe' => $row->profe1->getAttribute('nom'),
-                        ),
-                        $row->tipus0->getAttributes(array('abrev'))
+                            'abrevTipus' => $row->tipus0->getAttribute('abrev'),
+                        )
                     );
                 }
-                //echo print_r($data);
-                //return;
-                //$data = $data[0]->alumne0;
                 break;
             case "classe":
                 $data = Amonestacions::model()->with( array(
