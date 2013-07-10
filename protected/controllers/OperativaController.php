@@ -187,8 +187,11 @@ EOF;
      * Es retorna un JSON que el Javascript triturarà addientment.
      * En funció del paràmetre ID que es passarà a la consulta.
      */
-    public function actionConsulta($tipus, $id=null)
+    public function actionConsulta($tipus, $id=null, $exporta=null)
     {
+        $data = array();
+        $header = array();
+
         if (!isset($id)) {
             $id = Yii::app()->user->getState('uid',0);
         }
@@ -209,7 +212,12 @@ EOF;
                     'condition' => 'alumne=:alumne',
                     'params'    => array(":alumne"=>$id),
                 ));
-                $data = array();
+                if (isset($query[0])) {
+                    $header = $query[0]->attributeNames();
+                    $header[] = 'nomProfe';
+                    $header[] = 'ennomdeProfe';
+                    $header[] = 'abrevTipus';
+                }
                 foreach ($query as $row) {
                     $data[] = array_merge (
                         $row->getAttributes() ,
@@ -257,10 +265,22 @@ EOF;
              */
         }
 
-        header('Content-type: application/json');
         header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
         header('Pragma: no-cache'); // HTTP 1.0.
         header('Expires: 0'); // Proxies.
-        print_r (CJSON::encode($data));
+        if (isset($exporta) && $exporta == "csv") {
+            header('Content-type: text/csv');
+            header('Content-disposition: attachment');
+            $outstream = fopen("php://output", "w");
+            function __outputCSV(&$vals, $key, $filehandler) {
+                fputcsv($filehandler, $vals); // alguna opcio? compatibilitat amb alguna cosa?
+            }
+            fputcsv($outstream, $header); // capcalera de l'arxiu
+            array_walk($data, "__outputCSV", $outstream);
+            fclose($outstream);
+        } else {
+            header('Content-type: application/json');
+            print_r (CJSON::encode($data));
+        }
     }
 }
