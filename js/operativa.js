@@ -6,6 +6,18 @@
  llistat_tipus  = new Object();
  llistat_idtipus = new Array();
  consultingStatus = false;
+ hores = new Array();
+ hores[1] = "8:00";
+ hores[2] = "9:00";
+ hores[3] = "10:00";
+ hores[4] = "11:00";
+ hores[5] = "11:30";
+ hores[6] = "12:30";
+ hores[7] = "13:30";
+ hores[8] = "14:30";
+ hores[9] = "15:00";
+ hores[10] = "16:00";
+ hores[11] = "Altres";
  // variable ``profeAutor'' està definida amb php al index.php addient
  // variable ``URLprefix'' està definida amb php al index.php addient
 
@@ -111,8 +123,13 @@ $(function(){
     $("#escull").click(alumneSeleccionat);
     $("#llista_alumnes").dblclick(alumneSeleccionat);
 
-    // el llistat de classes
-    $("#filtres_classe").load(URLprefix + "llistatClasses")
+    // el llistat de classes, el carreguem al filtre d'alumnes i
+    // també a la sel·lecció del modal de consulta de classe
+    $.get(URLprefix + "llistatClasses", function(data) {
+        $("#filtres_classe").html(data);
+        $("#mFiltresClasse").html(data);
+    });
+
 
     // Filtratge d'alumnes
     $("#filtres_refresca").click(filtraAlumnes);
@@ -207,16 +224,22 @@ function amonestacioEscrita() {
 
 function meves() {
     $("#meves").parent().addClass("active");
+    $.get(URLprefix + "consulta/meves" , processaConsultaMeves );
 }
 
 function perAlumnes () {
     $("#peralumnes").parent().addClass("active");
     $("#consultaAlumnes").css("display","inherit");
     consultingStatus = true;
+    /* la gestio es realitza a la funcio alumneSeleccionat, que es
+      dispara quan es sel·lecciona algun alumne al menú de sel·lecció */
 }
 
 function perClasses() {
     $("#perclasses").parent().addClass("active");
+    $("#modalClasses").modal('show');
+    /* la gestio es realitza via els botons presents al propi modal
+      que s'acaba de mostrar, on es pot triar classe i acceptar */
 }
 
 /*
@@ -230,15 +253,14 @@ function alumneSeleccionat() {
     $("#ap_idalumne").val(al.val());
     $("#ap_alumne").val(al.text());
 
+    // en cas que estiguem en una consulta d'alumne, ens disparem
     if (consultingStatus) {
         // si estem en consulta "per alumnes", llavors treiem l'alert
         $("#consultaAlumnes").css("display","none");
         $("#respostaPrincipal").css("display","inherit")
           .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
         // i procedim a fer la query i aquestes coses
-        $.get(URLprefix + "consulta/alumne/" + al.val() , function(data) {
-			processaConsulta(data, ["tipus", "profe", "datalectiva"], ["situacio", "notes"]);
-		});
+        $.get(URLprefix + "consulta/alumne/" + al.val() , processaConsultaAlumnes );
     }
 }
 
@@ -357,45 +379,79 @@ function novaI_CB(data) {
 }
 
 /*
+ * Funcions per a obtenir cadenes de text adequades per a la creació
+ * de taules de consulta (ús d'accordion, javascript de bootstrap)
+ */
+function capcaleraEntrada(index, parent) {
+    return '<div class="accordion-group">' +
+        '<div class="accordion-heading row-fluid">' +
+        '<a class="accordion-toggle" data-toggle="collapse" data-parent="'
+            + parent + '" href="#collapse' + index + '">';
+}
+function mitjaEntrada(index) {
+    return '</a></div> <!-- accordion-heading -->' +
+        '<div id="collapse' + index + '" class="accordion-body collapse">' +
+        '<div class="accordion-inner">';
+}
+tancamentEntrada = '</div><!-- accordion-inner -->' +
+    '</div><!-- accordion-body -->' +
+    '</div><!-- accordion-group -->';
+// ***************************************************
+
+/*
  * Aquesta funció es crida com a callback davant de crides AJAX de
  * consulta.
  *
  * data és la variable JSON que conté el contingut de la resposta
  * L'objectiu és mostrar una taula correctament formatada
  */
-function processaConsulta(data, campsCapcalera, campsInterns) {
-    var processat = '<div class="accordion" id="accordionIncidencies">';
-	
+function processaConsultaAlumnes(data) {
+
+    // capcalera del document
+    var capDoc = '<h2>Consulta d\'alumne:</h2>' +
+        '<h1><small>' + $("#ap_alumne").val() + '</small></h3>';
+
+    // preparem 3 taules, amonestacions (grossa) i dos mitges per faltes i retards
+    var taulaInc = '<h3>Amonestacions</h3>' +
+        '<div class="accordion" id="accAmonestacions">';
+    var taulaR = '<div class="accordion span6" id="accR">' +
+        '<h3>Retards</h3>';
+    var taulaF = '<div class="accordion span6" id="accF">' +
+        '<h3>Faltes</h3>';
+
     /*
      * Procedim a processar "data" i a fer un html addient per a
      * tota la informació rebuda.
      */
     $.each(data, function (index, value) {
-		processat += '<div class="accordion-group">';
-		processat += '<div class="accordion-heading">';
-		processat += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionIncidencies" href="#collapse' + 
-			index + '">';
-		$.each(campsCapcalera, function (indexC, valueC) {
-			processat += '<span class="col' + valueC + '">' + 
-				value[valueC] + '</span>';
-		});
-		processat += '</a></div> <!-- accordion-heading -->';
-		processat += '<div id="collapse' + 
-			index + '" class="accordion-body collapse">';
-		processat += '<div class="accordion-inner">';
-		processat += "hello world";
-		processat += '</div><!-- accordion-inner -->';
-		processat += '</div><!-- accordion-body -->';
-		processat += '</div><!-- accordion-group -->';
-	});
-    
+        taulaInc += capcaleraEntrada(index, "accAmonestacions");
+        taulaInc += '<div class="col colId span1">' +
+            '#' + value['id'] + '</div>';
+        taulaInc += '<div class="col colennomde span5">' +
+            value['ennomdeProfe'] + '</div>';
+        taulaInc += '<div class="col colhoraLectiva offset2 span2">' +
+            hores[value['horaLectiva']] + '</div>';
+        taulaInc += '<div class="col coldataLectiva span2">' +
+            value['dataLectiva'] + '</div>';
+        taulaInc += mitjaEntrada(index);
+        taulaInc += "hello world";
+        taulaInc += tancamentEntrada;
+    });
+
     // tanquem
-    processat += '</div> <!-- #accordionIncidencies -->';
+    taulaInc += '</div> <!-- accordion Amonestacions -->';
+    taulaR += '</div> <!-- accordion Retards -->';
+    taulaF += '</div> <!-- accordion Faltes -->';
 
     // Volcat de tota l'estructura html al div central d'informació
-    $("#respostaPrincipal").html(processat);
+    $("#respostaPrincipal").html(capDoc + taulaInc +
+        '<div class="row-fluid">' +
+        taulaR + taulaF +
+        '</div> <!-- row-fluid de faltes i retards -->' );
+}
 
-    // Event handlers per al codi html que acabem de generar:
+function processaConsultaMeves(data) {
+
 }
 
 /*

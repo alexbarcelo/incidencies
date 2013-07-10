@@ -120,6 +120,21 @@
     Realitzeu la tria de l'alumne al bloc lateral per a continuar la consulta
     d'incidències.
   </div>
+  <!-- Modal -->
+  <div id="modalClasses" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="mClassesLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3 id="mClassesLabel">Sel·leccioneu una classe</h3>
+    </div>
+    <div class="modal-body">
+      <p>Escolliu una classe per a realitzar-hi la consulta d'incidències:</p>
+      <select class="span9" id="mFiltresClasse"></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel·la</button>
+      <button class="btn btn-primary">Realitzar consulta</button>
+    </div>
+  </div>
 </div><!--/span-->
 
 <!-- Le more javascript
