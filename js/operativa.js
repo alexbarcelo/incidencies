@@ -55,23 +55,11 @@ function preparaPagina () {
 /*
  * Quan es selecciona un alumne (doble click o btn adequat)
  *
- * S'actualitza la informació de la form, visible i no visible
+ * Es realitza la consulta AJAX addient i s'imprimeix el resultat
+ * de la consulta (dades d'amonestacions de l'alumne)
  */
 function alumneSeleccionat() {
-    // per defecte, carreguem el valor al camp corresponent
-    al = $("#llista_alumnes option:selected");
-    $("#ap_idalumne").val(al.val());
-    $("#ap_alumne").val(al.text());
-
-    // en cas que estiguem en una consulta d'alumne, ens disparem
-    if (consultingStatus) {
-        // si estem en consulta "per alumnes", llavors treiem l'alert
-        $("#consultaAlumnes").css("display","none");
-        $("#respostaPrincipal").css("display","inherit")
-          .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
-        // i procedim a fer la query i aquestes coses
-        $.get(URLprefix + "consulta/alumne/" + al.val() , processaConsultaAlumnes );
-    }
+  // ToDo
 }
 
 function setupAmonestacioTipus(data) {
@@ -163,13 +151,8 @@ function filtraAlumnes() {
     var query = new Array();
 
     if (nom) {
-        query.push("nom LIKE '%" + nom + "%'");
+        query.push("nombre LIKE '%" + nom + "%'");
     }
 
-    val = $("#filtres_classe option:selected").val();
-    if (val > 0) {
-        query.push("classe="+val);
-    }
-
-    $("#llista_alumnes").load(URLprefix + "filtraAlumnes",{'query':query.join(" AND ")});
+    $("#llista_alumnes").load(URLprefix + "filtraAlumnes",{'query':nom});
 }

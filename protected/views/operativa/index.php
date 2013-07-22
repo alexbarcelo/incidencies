@@ -8,15 +8,13 @@
 
     <div class="well well-small">
       <p><a href="#" id="filtresflip">
-        Filtres i opcions
+        Filtre d'alumnes
         <i id="icon_filtres" class="icon-chevron-down"></i>
       </a></p>
       <div id="filtres">
         <fieldset>
           <label>Nom de l'alumne:</label>
           <input type="text" class="span12" id="filtres_nom" placeholder="Nom"></input>
-          <label>Classe:</label>
-          <select class="span12" id="filtres_classe"></select>
           <button type="submit" id="filtres_refresca" class="btn">Refresca</button>
         </fieldset>
       </div>

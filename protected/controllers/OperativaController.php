@@ -56,20 +56,18 @@ class OperativaController extends Controller
             // AJAX, bad call, let's quit
             return;
         } else {
-            $criteria=new CDbCriteria;
-            $criteria->select = '`id`, `nom`, `cognom`';
-            // Deleguem al JS que ens doni la query adequada
-            $criteria->condition = $_POST['query'];
-            $criteria->limit = 100;
-            if (isset($_POST['offset'])) {
-                $criteria->offset = $_POST['offset'];
-            } // per defecte, comencem a offset 0
-
-            // Cerquem
-            $alumnes=Alumnes::model()->findAll($criteria);
-
-            foreach ($alumnes as $a) {
-                echo '<option value="' . $a->id .'">'. $a->cognom.', '.$a->nom . '</option>';
+            $val = $_POST['query'];
+//            $val = 'barcel';
+            $res = Yii::app()->db->createCommand()
+                ->select('id, nombre')
+                ->from('alumnos')
+                ->where('nombre LIKE :querynombre', array(':querynombre'=>"%$val%"))
+                ->queryAll();
+                //("SELECT `id`,`nombre` from `alumnos` WHERE `nombre` LIKE %:querynombre% ORDER BY `alumnos`.`nombre` ASC LIMIT 0,100");
+            if ( $res ) {
+                foreach ($res as $a) {
+                    echo '<option value="' . $a['id'] .'">'. $a['nombre'] . '</option>';
+                }
             }
         }
     }
@@ -196,73 +194,10 @@ EOF;
             $id = Yii::app()->user->getState('uid',0);
         }
         switch ($tipus) {
-            case "meves":
-                $data = Amonestacions::model()->with( array(
-                    'alumne0' => array (
-                        'select' => array('nom','cognom'),
-                    ),
-                ))->findAll( array(
-                    'condition' => 'ennomde=:ennomde',
-                    'params'    => array(":ennomde"=>$id),
-                ));
-                break;
             case "alumne":
-                $query = Amonestacions::model()->with(array('tipus0','profe0','profe1'))
-                ->findAll( array(
-                    'condition' => 'alumne=:alumne',
-                    'params'    => array(":alumne"=>$id),
-                ));
-                if (isset($query[0])) {
-                    $header = $query[0]->attributeNames();
-                    $header[] = 'nomProfe';
-                    $header[] = 'ennomdeProfe';
-                    $header[] = 'abrevTipus';
-                }
-                foreach ($query as $row) {
-                    $data[] = array_merge (
-                        $row->getAttributes() ,
-                        array(
-                            'nomProfe' => $row->profe0->getAttribute('nom') ,
-                            'ennomdeProfe' => $row->profe1->getAttribute('nom'),
-                            'abrevTipus' => $row->tipus0->getAttribute('abrev'),
-                        )
-                    );
-                }
                 break;
             case "classe":
-                $data = Amonestacions::model()->with( array(
-                    'alumne0' => array(
-                        'condition'=>"classe=:id",
-                        'params'   => array(":id"=>$id),
-                    ),
-                ))->findAll();
                 break;
-            case "profe":
-                $data = Amonestacions::model()->findAll( array(
-                    'condition' => 'ennomde=:ennomde',
-                    'params'    => array(":ennomde"=>$id),
-                ));
-                break;
-            case "novestutor":
-                $data = Amonestacions::model()->with( array(
-                    'alumne0' => array(
-                        'condition'=>"classe=:id",
-                        'params'   => array(":id"=>$id),
-                    ),
-                ))->findAll(array(
-                    'condition' => "jaVista=0",
-                ));
-                break;
-
-            /**
-             * Encara s'ha d'acabar
-             *
-            case "acumulades":
-                $data = Amonestacions::model()->findAll( array(
-                    'condition' => 'assignadaEscrita=0',
-                ));
-                break;
-             */
         }
 
         header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
