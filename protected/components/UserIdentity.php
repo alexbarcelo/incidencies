@@ -15,23 +15,26 @@ class UserIdentity extends CUserIdentity
      */
     public function authenticate()
     {
-        // Temporal:
-        if ( ($this->username === "admin") && ($this->password === "deixamentrar") ) {
-            $this->errorCode=self::ERROR_NONE;
-            return !$this->errorCode;
-        }
+        $conn = new CDbConnection("mysql:host=localhost;dbname=config","root","");
+        $cmd  = $conn->createCommand("SELECT * from `usuarios` WHERE `usuario`=:idusername AND `clave`=:clave ORDER BY `usuarios`.`id` DESC");
+        $cmd->bindParam(":idusername",$this->username,PDO::PARAM_STR);
+        $cmd->bindParam(":clave",$this->password,PDO::PARAM_STR);
+        $row  = $cmd->queryRow();
 
-        $user = Profes::model()->findByAttributes(array('username'=>$this->username));
-        if ($user===null)
+        if (!$row)
           $this->errorCode=self::ERROR_USERNAME_INVALID;
-        elseif ( crypt($this->password, $user->password) !== $user->password)
-          $this->errorCode=self::ERROR_PASSWORD_INVALID;
         else {
           // Okay! Check Nom i equipDirectiu
           $this->errorCode=self::ERROR_NONE;
-          $this->_name = $user->nom;
-          $this->setState("uid", $user->id);
-          if ($user->equip_directiu === '1') {
+          $this->_name = $row["nombre"];
+          $this->setState("uid", $row["idProfesores"]);
+
+          /*
+           * Detecció ``a mà'' de l'equip directiu (es podria millorar)
+           *
+           * Per ara, detectem només la Carretero
+           */
+          if ($row["usuario"] === '13') {
             $this->setState("equipDirectiu", true);
           }
         }
