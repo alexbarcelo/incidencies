@@ -160,15 +160,10 @@ function processaConsultaAlumnes(data) {
  */
 function filtraAlumnes() {
     var nom = $("#filtres_nom").val();
-    var cognom = $("#filtres_cognom").val();
     var query = new Array();
 
     if (nom) {
         query.push("nom LIKE '%" + nom + "%'");
-    }
-
-    if (cognom) {
-        query.push("cognom LIKE '%" + cognom + "%'");
     }
 
     val = $("#filtres_classe option:selected").val();
