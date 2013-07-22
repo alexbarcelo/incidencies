@@ -2,8 +2,11 @@
  * Operativa -- Javascript, jQuery & AJAX
  */
 
+ llistat_tipus = new Array();
  llistat_idtipus = new Array();
  hores = new Array();
+ profes = new Array();
+ nom_alumne = "";
 
 $(function(){
     // Seleccionem link actiu del menú principal
@@ -23,6 +26,8 @@ $(function(){
     });
 
     $.get(URLprefix + "llistatTipus", setupAmonestacioTipus);
+    $.get(URLprefix + "llistatProfes", setupProfes);
+    $.get(URLprefix + "llistatHores", setupHores);
 
     // Accio quan s'escull un alumne
     $("#escull").click(alumneSeleccionat);
@@ -38,7 +43,6 @@ $(function(){
     // Filtratge d'alumnes
     $("#filtres_refresca").click(filtraAlumnes);
     $("#filtres_nom").change(filtraAlumnes);
-    $("#filtres_cognom").change(filtraAlumnes);
     $("#filtres_classe").change(filtraAlumnes);
 });
 
@@ -47,7 +51,6 @@ $(function(){
  * per quan hi ha algun click o canvi de pantalla
  */
 function preparaPagina () {
-    $("#consultaAlumnes").css("display","none");
     $("#col_alumnes").css("display","inherit");
     $("#respostaPrincipal").css("display","none");
 }
@@ -59,13 +62,40 @@ function preparaPagina () {
  * de la consulta (dades d'amonestacions de l'alumne)
  */
 function alumneSeleccionat() {
-  // ToDo
+    // agafem el valor corresponent a l'alumne selected
+    al = $("#llista_alumnes option:selected");
+    nom_alumne = al.text();
+    $("#respostaPrincipal").css("display","inherit")
+          .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
+    $.get(URLprefix + "consulta/alumne/" + al.val() , processaConsultaAlumnes);
 }
 
+/*
+ * Funcions de setup de dades internes
+ *
+ * Disparades per AJAX, plenen informació de variables internes
+ * d'ús habitual
+ */
+
+ // setup dels Tipus
 function setupAmonestacioTipus(data) {
     $.each(data, function(i, t) {
-        llistat_tipus[t.descr] = t;
+        llistat_tipus[t.simbolo] = t;
         llistat_idtipus[t.id] = t;
+    });
+}
+
+// setup dels profes
+function setupProfes(data) {
+    $.each(data, function(i,p) {
+        profes[p.id] = p.nombre;
+    });
+}
+
+// setup de les hores
+function setupHores(data) {
+    $.each(data, function(i,h) {
+        hores[h.id] = h.inicio;
     });
 }
 
@@ -97,47 +127,44 @@ tancamentEntrada = '</div><!-- accordion-inner -->' +
  * L'objectiu és mostrar una taula correctament formatada
  */
 function processaConsultaAlumnes(data) {
-
     // capcalera del document
     var capDoc = '<h2>Consulta d\'alumne:</h2>' +
-        '<h1><small>' + $("#ap_alumne").val() + '</small></h3>';
+        '<h1><small>' + nom_alumne + '</small></h3>';
 
     // preparem 3 taules, amonestacions (grossa) i dos mitges per faltes i retards
-    var taulaInc = '<h3>Amonestacions</h3>' +
+    var taulaInc = '<h3>Incidències</h3>' +
         '<div class="accordion" id="accAmonestacions">';
-    var taulaR = '<div class="accordion span6" id="accR">' +
-        '<h3>Retards</h3>';
-    var taulaF = '<div class="accordion span6" id="accF">' +
-        '<h3>Faltes</h3>';
 
     /*
      * Procedim a processar "data" i a fer un html addient per a
      * tota la informació rebuda.
      */
     $.each(data, function (index, value) {
-        taulaInc += capcaleraEntrada(index, "accAmonestacions");
-        taulaInc += '<div class="col colId span1">' +
-            '#' + value['id'] + '</div>';
-        taulaInc += '<div class="col colennomde span5">' +
-            value['ennomdeProfe'] + '</div>';
-        taulaInc += '<div class="col colhoraLectiva offset2 span2">' +
-            hores[value['horaLectiva']] + '</div>';
-        taulaInc += '<div class="col coldataLectiva span2">' +
-            value['dataLectiva'] + '</div>';
-        taulaInc += mitjaEntrada(index);
-        taulaInc += "hello world";
-        taulaInc += tancamentEntrada;
+        if (value['idTipoIncidencias'] > 0) {
+            taulaInc += capcaleraEntrada(index, "accAmonestacions");
+            taulaInc += '<div class="col colId span1">' +
+                '#' + value['id'] + '</div>';
+            taulaInc += '<div class="col colProfe span5">' +
+                profes[value['idProfesores']] + '</div>';
+            taulaInc += '<div class="col colTipusInc span2">' +
+                llistat_idtipus[value['idTipoIncidencias']].simbolo + '</div>';
+                value['idTipoIncidencias'] + llistat_idtipus[3].simbolo + '</div>';
+            taulaInc += '<div class="col colMomentLectiu span2">' +
+                hores[value['idHorasCentro']] + '</div>';
+            taulaInc += '<div class="col coldataLectiva span2">' +
+                value['dia'] + '</div>';
+            taulaInc += mitjaEntrada(index);
+            taulaInc += value['comentarios'];
+            taulaInc += tancamentEntrada;
+        }
     });
 
     // tanquem
     taulaInc += '</div> <!-- accordion Amonestacions -->';
-    taulaR += '</div> <!-- accordion Retards -->';
-    taulaF += '</div> <!-- accordion Faltes -->';
 
     // Volcat de tota l'estructura html al div central d'informació
     $("#respostaPrincipal").html(capDoc + taulaInc +
         '<div class="row-fluid">' +
-        taulaR + taulaF +
         '</div> <!-- row-fluid de faltes i retards -->' );
 }
 

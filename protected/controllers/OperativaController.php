@@ -25,7 +25,7 @@ class OperativaController extends Controller
             array('allow',  // allow profes (per ara, els unics que fan login)
                 'actions'=>array('index','llistatProfes', 'llistatTipus',
                     'filtraAlumnes', 'llistatClasses', 'novaIncidencia',
-                    'consulta'),
+                    'consulta', 'llistatHores'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -57,64 +57,18 @@ class OperativaController extends Controller
             return;
         } else {
             $val = $_POST['query'];
-//            $val = 'barcel';
             $res = Yii::app()->db->createCommand()
                 ->select('id, nombre')
                 ->from('alumnos')
                 ->where('nombre LIKE :querynombre', array(':querynombre'=>"%$val%"))
+                ->order('nombre asc')
                 ->queryAll();
-                //("SELECT `id`,`nombre` from `alumnos` WHERE `nombre` LIKE %:querynombre% ORDER BY `alumnos`.`nombre` ASC LIMIT 0,100");
+                //"SELECT `id`,`nombre` from `alumnos` WHERE `nombre` LIKE %:querynombre% ORDER BY `alumnos`.`nombre` ASC"
             if ( $res ) {
                 foreach ($res as $a) {
                     echo '<option value="' . $a['id'] .'">'. $a['nombre'] . '</option>';
                 }
             }
-        }
-    }
-
-    /**
-     * AJAX function
-     *
-     * Es crida via jQuery quan hi ha una intenció (per part de l'usuari)
-     * de guardar una incidència.
-     *
-     * La resposta és codi HTML
-     */
-    public function actionNovaIncidencia()
-    {
-        $amonestacio = new Amonestacions();
-        $amonestacio->attributes = $_POST;
-        if ($amonestacio->save()) {
-            $id = $amonestacio->id;
-            //$hashId = friendlyHash($id);
-            echo <<< EOF
-<div class="alert alert-success alert-block">
-  <h4>Procés completat satisfactòriament</h4>
-    <p>L'amonestació s'ha creat satisfactòriament. El seu identificador
-    per a futures referències és <strong>#$id</strong></p>
-
-    <p>Si desitja realitzar-hi modificacions, consulteu amb l'equip directiu</p>
-</div>
-EOF;
-        } else {
-            $errors = print_r($amonestacio->getErrors(), true);
-            echo <<< EOF
-<div class="alert alert-error alert-block">
-  <h4>Hi ha hagut un error</h4>
-    <p>Hi ha hagut un error en la creació de la incidència. Comproveu si s'ha creat
-    satisfactòriament, o torneu-la a crear.</p>
-
-    <p>En cas de que el problema persisteixi, consulteu personal tècnic.</p>
-</div>
-<div class="alert alert-block">
-  <h4>Informació tècnica</h4>
-    <p>Guardeu la següent informació en un document de text:</p>
-
-<code>$errors</code>
-
-</div>
-
-EOF;
         }
     }
 
@@ -128,27 +82,42 @@ EOF;
     {
         // línia buida, placeholder
         echo '<option value="-1">Escollir...</option>';
-        $classes=Classes::model()->findAll();
-        $data = array();
+
+        $classes = Yii::app()->db->createCommand()
+                ->select('descripcion, grupoGestion')
+                ->from('grupos')
+                ->queryAll();
+
         foreach ($classes as $c) {
-            echo '<option value="' . $c->id .'">' . $c->descr .'</option>';
+            echo '<option value="' . $c['grupoGestion'] .'">' . $c['descripcion'] .'</option>';
         }
     }
 
-    /**
-     * Llistat de profes, per a l'autocompletat
+    /*
+     * Obtencio d'una llista de profes, per a guardar de forma estatica
      */
     public function actionLlistatProfes()
     {
-        $profes=Profes::model()->findAll();
-        $data = array();
-        foreach ($profes as $p) {
-            $entry = array(
-                "id" =>  $p->id,
-                "nom" => $p->nom
-            );
-            $data[] = $entry;
-        }
+        $data= Yii::app()->db->createCommand()
+                ->select('id, nombre')
+                ->from('profesores')
+                ->queryAll();
+        header('Content-type: application/json');
+        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Pragma: no-cache'); // HTTP 1.0.
+        header('Expires: 0'); // Proxies.
+        echo CJSON::encode($data);
+    }
+
+    /*
+     * Obtencio d'una llista de les hores de classe del centre
+     */
+    public function actionLlistatHores()
+    {
+        $data= Yii::app()->db->createCommand()
+            ->select('id, inicio')
+            ->from('horascentro')
+            ->queryAll();
         header('Content-type: application/json');
         header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
         header('Pragma: no-cache'); // HTTP 1.0.
@@ -161,17 +130,11 @@ EOF;
      */
     public function actionLlistatTipus()
     {
-        $tipus=Tipus::model()->findAll();
-        $data = array();
-        foreach ($tipus as $t) {
-            $entry = array(
-                "id"        => $t->id,
-                "descr"     => $t->descr,
-                "longDescr" => $t->longDescr,
-                "abrev"     => $t->abrev
-            );
-            $data[] = $entry;
-        }
+        $data= Yii::app()->db->createCommand()
+            ->select('id, simbolo, descripcion, peso, tipo')
+            ->from('tipoincidencias')
+            ->where("tipo='faltas'")
+            ->queryAll();
         header('Content-type: application/json');
         header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
         header('Pragma: no-cache'); // HTTP 1.0.
@@ -185,16 +148,19 @@ EOF;
      * Es retorna un JSON que el Javascript triturarà addientment.
      * En funció del paràmetre ID que es passarà a la consulta.
      */
-    public function actionConsulta($tipus, $id=null, $exporta=null)
+    public function actionConsulta($tipus, $id)
     {
         $data = array();
         $header = array();
 
-        if (!isset($id)) {
-            $id = Yii::app()->user->getState('uid',0);
-        }
         switch ($tipus) {
             case "alumne":
+                $data = Yii::app()->db->createCommand()
+                    ->select('id, idProfesores, idTipoIncidencias, idHorasCentro, dia, comentarios')
+                    ->from('faltasalumnos')
+                    ->where('idAlumnos=:idalumne', array(':idalumne' => $id) )
+                    ->order('dia,idHorasCentro asc')
+                    ->queryAll();
                 break;
             case "classe":
                 break;
