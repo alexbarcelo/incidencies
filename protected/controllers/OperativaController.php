@@ -159,7 +159,7 @@ class OperativaController extends Controller
                     ->select('id, idProfesores, idTipoIncidencias, idHorasCentro, dia, comentarios')
                     ->from('faltasalumnos')
                     ->where('idAlumnos=:idalumne', array(':idalumne' => $id) )
-                    ->order('dia,idHorasCentro asc')
+                    ->order(array ('dia desc', 'idHorasCentro asc'))
                     ->queryAll();
                 break;
             case "classe":
