@@ -132,39 +132,71 @@ function processaConsultaAlumnes(data) {
         '<h1><small>' + nom_alumne + '</small></h3>';
 
     // preparem 3 taules, amonestacions (grossa) i dos mitges per faltes i retards
-    var taulaInc = '<h3>Incidències</h3>' +
+    var taulaInc = '<h3>Amonestacions</h3>' +
         '<div class="accordion" id="accAmonestacions">';
+
+    var taulaR = '<div class="span6" id="accR">' +
+        '<h3>Retards</h3>';
+    var taulaF = '<div class="span6" id="accF">' +
+        '<h3>Faltes</h3>';
 
     /*
      * Procedim a processar "data" i a fer un html addient per a
      * tota la informació rebuda.
      */
     $.each(data, function (index, value) {
-        if (value['idTipoIncidencias'] > 0) {
+        if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "AM") {
             taulaInc += capcaleraEntrada(index, "accAmonestacions");
-            taulaInc += '<div class="col colId span1">' +
+            taulaInc += '<div class="col colId span2">' +
                 '#' + value['id'] + '</div>';
             taulaInc += '<div class="col colProfe span5">' +
                 profes[value['idProfesores']] + '</div>';
-            taulaInc += '<div class="col colTipusInc span2">' +
-                llistat_idtipus[value['idTipoIncidencias']].simbolo + '</div>';
-                value['idTipoIncidencias'] + llistat_idtipus[3].simbolo + '</div>';
-            taulaInc += '<div class="col colMomentLectiu span2">' +
+            taulaInc += '<div class="col colMomentLectiu offset1 span2">' +
                 hores[value['idHorasCentro']] + '</div>';
             taulaInc += '<div class="col coldataLectiva span2">' +
                 value['dia'] + '</div>';
             taulaInc += mitjaEntrada(index);
             taulaInc += value['comentarios'];
             taulaInc += tancamentEntrada;
+        } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "FA") {
+            taulaF += capcaleraEntrada(index, "accAmonestacions");
+            taulaF += '<div class="col colId span2">' +
+                '#' + value['id'] + '</div>';
+            taulaF += '<div class="col colProfe span4">' +
+                profes[value['idProfesores']] + '</div>';
+            taulaF += '<div class="col colMomentLectiu span2">' +
+                hores[value['idHorasCentro']] + '</div>';
+            taulaF += '<div class="col coldataLectiva span2">' +
+                value['dia'] + '</div>';
+            taulaF += mitjaEntrada(index);
+            taulaF += value['comentarios'];
+            taulaF += tancamentEntrada;
+
+        } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "RE") {
+            taulaR += capcaleraEntrada(index, "accAmonestacions");
+            taulaR += '<div class="col colId span2">' +
+                '#' + value['id'] + '</div>';
+            taulaR += '<div class="col colProfe span4">' +
+                profes[value['idProfesores']] + '</div>';
+            taulaR += '<div class="col colMomentLectiu span2">' +
+                hores[value['idHorasCentro']] + '</div>';
+            taulaR += '<div class="col coldataLectiva span2">' +
+                value['dia'] + '</div>';
+            taulaR += mitjaEntrada(index);
+            taulaR += value['comentarios'];
+            taulaR += tancamentEntrada;
         }
+
     });
 
     // tanquem
     taulaInc += '</div> <!-- accordion Amonestacions -->';
+    taulaR += '</div> <!-- accordion Retards -->';
+    taulaF += '</div> <!-- accordion Faltes -->';
 
     // Volcat de tota l'estructura html al div central d'informació
     $("#respostaPrincipal").html(capDoc + taulaInc +
-        '<div class="row-fluid">' +
+        '<div class="row-fluid">' + taulaR + taulaF +
         '</div> <!-- row-fluid de faltes i retards -->' );
 }
 
