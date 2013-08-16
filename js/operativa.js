@@ -24,6 +24,9 @@ $(function(){
         $("#icon_filtres").toggleClass("icon-chevron-down icon-chevron-up");
         e.preventDefault();
     });
+    
+    // Click de generació d'amonestació escrita (sobre la modal de confirmació)
+    $("#modalGenEscrita .btn-primary").click(modalGenOk);
 
     $.get(URLprefix + "llistatTipus", setupAmonestacioTipus);
     $.get(URLprefix + "llistatProfes", setupProfes);
@@ -60,6 +63,25 @@ function initSideCounter() {
 	// Assegurar que el botó està ben "disabled"
 	$("#btnModalGenEscrita").addClass("disabled")
 		.attr("disabled","disabled");
+}
+
+/*
+ * S'ha acceptat la confirmació de la finestra modal per a generar
+ * una escrita.
+ */
+function modalGenOk() {
+	$("#modalGenEscrita").modal('hide');
+	// Guardem la llista d'incidencies
+	var llista = new Array();
+	$("tbody .info").each(function() {
+		llista.push( $(this).attr("id") );
+	});
+	
+	// Buidem la pàgina, i deixem una espera fins que l'AJAX torni.
+	preparaPagina();
+    $("#respostaPrincipal").css("display","inherit")
+      .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
+	  .load(URLprefix + "creaEscrita" , {"incidencies": llista});
 }
 
 /*

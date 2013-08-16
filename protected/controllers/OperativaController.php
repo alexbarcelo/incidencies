@@ -25,7 +25,7 @@ class OperativaController extends Controller
             array('allow',  // allow profes (per ara, els unics que fan login)
                 'actions'=>array('index','llistatProfes', 'llistatTipus',
                     'filtraAlumnes', 'llistatClasses', 'novaIncidencia',
-                    'consulta', 'llistatHores'),
+                    'consulta', 'llistatHores', 'creaEscrita'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -69,6 +69,23 @@ class OperativaController extends Controller
                     echo '<option value="' . $a['id'] .'">'. $a['nombre'] . '</option>';
                 }
             }
+		}
+    }
+
+    /**
+     * AJAX, triggered by generacio d'una amonestacio escrita
+     * 
+     * Correctament s'haurien d'haver enviat una llista (space-separated)
+     * de identificadors d'amonestacions i amb aquesta llista s'hauria
+     * de generar una nova amonestació escrita.
+     */
+    public function actionCreaEscrita()
+    {
+        if (!isset($_POST['incidencies'])) {
+            // AJAX, bad call, let's quit
+            return;
+        } else {
+			echo var_dump($_POST['incidencies']);
 		}
     }
 
