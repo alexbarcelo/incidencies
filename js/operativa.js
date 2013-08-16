@@ -46,12 +46,30 @@ $(function(){
 });
 
 /*
+ * Inicialització del div lateral contador d'incidències
+ */ 
+function initSideCounter() {
+	// Posem a zero els comptadors de incidències seleccionades
+	$("#numAm").text( 0 );
+	$("#numF").text( 0 );
+	$("#numR").text( 0 );
+	$("#modalNumAm").text( 0 );
+	$("#modalNumF").text( 0 );
+	$("#modalNumR").text( 0 );	
+	
+	// Assegurar que el botó està ben "disabled"
+	$("#btnModalGenEscrita").addClass("disabled")
+		.attr("disabled","disabled");
+}
+
+/*
  * Inicialitzem les tipiques variables i displays
  * per quan hi ha algun click o canvi de pantalla
  */
 function preparaPagina () {
     $("#col_alumnes").css("display","inherit");
     $("#respostaPrincipal").css("display","none");
+    initSideCounter();
 }
 
 /*
@@ -110,9 +128,19 @@ function setupProfes(data) {
  */
 function clickOnRow() {
 	$(this).toggleClass("info");
-	$("#numAm").text( $("#taulaAm tbody .info").length );
-	$("#numF").text( $("#taulaF tbody .info").length );
-	$("#numR").text( $("#taulaR tbody .info").length );
+	var c = $("#taulaAm tbody .info").length;
+	$("#numAm").text( c );
+	$("#modalNumAm").text( c );
+	c = $("#taulaF tbody .info").length;
+	$("#numF").text( c );
+	$("#modalNumF").text( c );
+	c = $("#taulaR tbody .info").length;
+	$("#numR").text( c );
+	$("#modalNumR").text( c );
+	
+	// Assegurar que el botó està ben "enabled"
+	$("#btnModalGenEscrita").removeClass("disabled")
+		.removeAttr("disabled");
 }
 
 /*
@@ -182,11 +210,9 @@ function processaConsultaAlumnes(data) {
     taulaAm += '</tbody></table> <!-- taula Amonestacions -->';
     taulaR += '</tbody></table> <!-- taula Retards --> </div>';
     taulaF += '</tbody></table> <!-- taula Faltes --> </div>';
-
-	// Posem a zero els comptadors de incidències seleccionades
-	$("#numAm").text( 0 );
-	$("#numF").text( 0 );
-	$("#numR").text( 0 );
+    
+    initSideCounter();
+    $("#modalNom").text(nom_alumne);
 
     // Volcat de tota l'estructura html al div central d'informació
     $("#respostaPrincipal").html(capDoc + taulaAm +

@@ -29,9 +29,31 @@
     <p>Amonestacions: <span id="numAm"></span></p>
     <p>Retards: <span id="numR"></span></p>
 	<p>Faltes: <span id="numF"></span></p>
-    <p><button id="posarEscrita" class="span11">Generar escrita</button></p>
-    <p> &nbsp </p>
+	<button id="btnModalGenEscrita" href="#modalGenEscrita" role="button" class="btn disabled" disabled="disabled" data-toggle="modal">Generar escrita</button>	
   </div><!--/.well col_alumnes-->
+  
+  <!-- El DIV del modal per a quan es clica sobre el botó "generar escrita" -->
+  <div id="modalGenEscrita" class="modal hide fade">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Generació d'amonestació escrita</h3>
+    </div>
+    <div class="modal-body">
+      <p>Esteu a punt de crear una amonestació escrita per a l'alumne:<br>
+	  <strong><span id="modalNom"></span></strong></p>
+	  <p>Agrupant el següent:<br><ul>
+		 <li>Amonestacions: <span id="modalNumAm"></span></li>
+	     <li>Faltes: <span id="modalNumF"></span></li>
+	     <li>Retards: <span id="modalNumR"></span></li>
+	  </ul></p>
+	  <hr>
+	  <p>Assegureu-vos que aquesta combinació és adequada abans de generar l'amonestació escrita i enviar notificació a cap d'estudis</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="btn">Cancel·la</a>
+      <a href="#" class="btn btn-primary">Aplica i genera</a>
+    </div>
+  </div>
 
 </div><!--/span-->
 
