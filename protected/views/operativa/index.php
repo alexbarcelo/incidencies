@@ -20,9 +20,19 @@
       </div>
     </div><!--/.well -->
     <select class="span12" id="llista_alumnes" size=10></select>
-    <p><button id="escull" class="span9">Escull l'alumne</button></p>
+    <p><button id="escull">Escull l'alumne</button></p>
     <p> &nbsp </p>
   </div><!--/.well col_alumnes-->
+  
+  <div class="well well-small" id="sideCounter">
+	<h2><small>Sel·lecció actual</small></h3>
+    <p>Amonestacions: <span id="numAm"></span></p>
+    <p>Retards: <span id="numR"></span></p>
+	<p>Faltes: <span id="numF"></span></p>
+    <p><button id="posarEscrita" class="span11">Generar escrita</button></p>
+    <p> &nbsp </p>
+  </div><!--/.well col_alumnes-->
+
 </div><!--/span-->
 
 <div class="span9">

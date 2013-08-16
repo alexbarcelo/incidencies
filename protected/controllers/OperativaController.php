@@ -55,7 +55,7 @@ class OperativaController extends Controller
         if (!isset($_POST['query'])) {
             // AJAX, bad call, let's quit
             return;
-        } else {
+        } else { 
             $val = $_POST['query'];
             $res = Yii::app()->db->createCommand()
                 ->select('id, nombre')
@@ -69,7 +69,7 @@ class OperativaController extends Controller
                     echo '<option value="' . $a['id'] .'">'. $a['nombre'] . '</option>';
                 }
             }
-        }
+		}
     }
 
     /**
@@ -148,40 +148,22 @@ class OperativaController extends Controller
      * Es retorna un JSON que el Javascript triturarà addientment.
      * En funció del paràmetre ID que es passarà a la consulta.
      */
-    public function actionConsulta($tipus, $id)
+    public function actionConsultaAlumne($id)
     {
         $data = array();
         $header = array();
 
-        switch ($tipus) {
-            case "alumne":
-                $data = Yii::app()->db->createCommand()
-                    ->select('id, idProfesores, idTipoIncidencias, idHorasCentro, dia, comentarios')
-                    ->from('faltasalumnos')
-                    ->where('idAlumnos=:idalumne', array(':idalumne' => $id) )
-                    ->order(array ('dia desc', 'idHorasCentro asc'))
-                    ->queryAll();
-                break;
-            case "classe":
-                break;
-        }
+		$data = Yii::app()->db->createCommand()
+			->select('id, idProfesores, idTipoIncidencias, idHorasCentro, dia, comentarios')
+            ->from('faltasalumnos')
+			->where('idAlumnos=:idalumne', array(':idalumne' => $id) )
+			->order(array ('dia desc', 'idHorasCentro asc'))
+			->queryAll();
 
         header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
         header('Pragma: no-cache'); // HTTP 1.0.
         header('Expires: 0'); // Proxies.
-        if (isset($exporta) && $exporta == "csv") {
-            header('Content-type: text/csv');
-            header('Content-disposition: attachment');
-            $outstream = fopen("php://output", "w");
-            function __outputCSV(&$vals, $key, $filehandler) {
-                fputcsv($filehandler, $vals); // alguna opcio? compatibilitat amb alguna cosa?
-            }
-            fputcsv($outstream, $header); // capcalera de l'arxiu
-            array_walk($data, "__outputCSV", $outstream);
-            fclose($outstream);
-        } else {
-            header('Content-type: application/json');
-            print_r (CJSON::encode($data));
-        }
+		header('Content-type: application/json');
+        print_r (CJSON::encode($data));
     }
 }
