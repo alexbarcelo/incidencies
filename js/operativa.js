@@ -7,6 +7,7 @@
  hores = new Array();
  profes = new Array();
  nom_alumne = "";
+ id_alumne = 0;
 
 $(function(){
     // Seleccionem link actiu del menú principal
@@ -81,7 +82,7 @@ function modalGenOk() {
 	preparaPagina();
     $("#respostaPrincipal").css("display","inherit")
       .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
-	  .load(URLprefix + "creaEscrita" , {"incidencies": llista});
+	  .load(URLprefix + "creaEscrita" , {"incidencies": llista, "id": id_alumne});
 }
 
 /*
@@ -104,9 +105,10 @@ function alumneSeleccionat() {
     // agafem el valor corresponent a l'alumne selected
     al = $("#llista_alumnes option:selected");
     nom_alumne = al.text();
+    id_alumne = al.val();
     $("#respostaPrincipal").css("display","inherit")
           .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
-    $.get(URLprefix + "consultaAlumne/" + al.val() , processaConsultaAlumnes);
+    $.get(URLprefix + "consultaAlumne/" + id_alumne , processaConsultaAlumnes);
 }
 
 /*
