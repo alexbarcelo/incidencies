@@ -36,12 +36,13 @@ $(function(){
     // Accio quan s'escull un alumne
     $("#escull").click(alumneSeleccionat);
     $("#llista_alumnes").dblclick(alumneSeleccionat);
+    
+    // Accio quan s'escull una classe
+    $("#escull_classe").click(classeSeleccionada);
 
-    // el llistat de classes, el carreguem al filtre d'alumnes i
-    // també a la sel·lecció del modal de consulta de classe
+    // el llistat de classes, el carreguem
     $.get(URLprefix + "llistatClasses", function(data) {
         $("#filtres_classe").html(data);
-        $("#mFiltresClasse").html(data);
     });
 
     // Filtratge d'alumnes
@@ -120,6 +121,15 @@ function alumneSeleccionat() {
 				"<h4>Error intern en l'aplicació</h4>"
 				+ data.status + " " + data.statusText + '</div><div>' + data.responseText + '</div>');
 		});
+}
+
+/*
+ * Quan es selecciona una classe.
+ * 
+ * La sel·lecció de classe es completa amb una consulta AJAX i resultats
+ * al div principal de resposta
+ */
+function classeSeleccionada() {
 }
 
 /*

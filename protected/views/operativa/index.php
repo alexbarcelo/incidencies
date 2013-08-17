@@ -8,20 +8,29 @@
 
     <div class="well well-small">
       <p><a href="#" id="filtresflip">
-        Filtre d'alumnes
+        Filtre per nom
         <i id="icon_filtres" class="icon-chevron-down"></i>
       </a></p>
       <div id="filtres">
         <fieldset>
           <label>Nom de l'alumne:</label>
           <input type="text" class="span12" id="filtres_nom" placeholder="Nom"></input>
-          <button type="submit" id="filtres_refresca" class="btn">Refresca</button>
+		  <label>Resultats:</label>
+          <select class="span12" id="llista_alumnes" size=10></select>
         </fieldset>
+        <div class="btn-group">
+		  <button id="filtres_refresca" class="btn btn-info">Refresca</button>
+		  <button id="escull" class="btn btn-primary">Consulta</button>
+		</div>
       </div>
     </div><!--/.well -->
-    <select class="span12" id="llista_alumnes" size=10></select>
-    <p><button id="escull">Escull l'alumne</button></p>
-    <p> &nbsp </p>
+    <div class="well well-small">
+      <p>Sel·lecció de classe:</p>
+      <div class="input-append">
+		<select id="filtres_classe" class="span8"></select>
+		<button id="escull_classe" class="btn btn-primary" type="button">Consulta</button>
+	  </div>
+    </div><!--/.well -->
   </div><!--/.well col_alumnes-->
   
   <div class="well well-small" id="sideCounter">
@@ -29,7 +38,7 @@
     <p>Amonestacions: <span id="numAm"></span></p>
     <p>Retards: <span id="numR"></span></p>
 	<p>Faltes: <span id="numF"></span></p>
-	<button id="btnModalGenEscrita" href="#modalGenEscrita" role="button" class="btn disabled" disabled="disabled" data-toggle="modal">Generar escrita</button>	
+	<button id="btnModalGenEscrita" href="#modalGenEscrita" role="button" class="btn btn-danger disabled" disabled="disabled" data-toggle="modal">Generar escrita</button>	
   </div><!--/.well col_alumnes-->
   
   <!-- El DIV del modal per a quan es clica sobre el botó "generar escrita" -->
