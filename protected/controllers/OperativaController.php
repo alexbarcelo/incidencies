@@ -154,6 +154,7 @@ EOF;
         $classes = Yii::app()->db->createCommand()
                 ->select('descripcion, grupoGestion')
                 ->from('grupos')
+                ->order('descripcion asc')
                 ->queryAll();
 
         foreach ($classes as $c) {
