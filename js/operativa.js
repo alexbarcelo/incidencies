@@ -189,20 +189,20 @@ function processaConsultaAlumnes(data) {
     // capcalera del document
     var capDoc = '<h2>Consulta d\'alumne:</h2>' +
         '<h1><small>' + nom_alumne + '</small></h1>';
+        
+    var totalAm = 0, totalR = 0, totalF = 0;
 
     // preparem 3 taules, amonestacions (grossa) i dos mitges per faltes i retards
-    var taulaAm = '<h3>Amonestacions</h3>' +
+    var taulaAm =
         '<table class="table table-striped" id="taulaAm">' +
         '<thead><tr>'+ '<th>Professor</th>' + '<th>Hora</th>' + '<th>Data</th>' +
         '<th>Comentaris</th>' +
         '</tr></thead><tbody>';
-    var taulaR = '<div class="span6">' +
-        '<h3>Retards</h3>' +
+    var taulaR =
         '<table class="table table-striped" id="taulaR">' +
         '<thead><tr>'+ '<th>Professor</th>' + '<th>Hora</th>' + '<th>Data</th>' +
         '</tr></thead><tbody>';
-    var taulaF = '<div class="span6">' +
-        '<h3>Faltes</h3>' +
+    var taulaF =
         '<table class="table table-striped" id="taulaF">' +
         '<thead><tr>'+ '<th>Professor</th>' + '<th>Hora</th>' + '<th>Data</th>' +
         '</tr></thead><tbody>';
@@ -213,12 +213,13 @@ function processaConsultaAlumnes(data) {
      */
     $.each(data, function (index, value) {
         if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "AM") {
+			totalAm++;
             taulaAm += '<tr id='+value['id']+'>'
             taulaAm += '<td>' + profes[value['idProfesores']] + '</td>';
             taulaAm += '<td>' + hores[value['idHorasCentro']] + '</td>';
             taulaAm += '<td>' + value['dia'] + '</td>';
             
-            if ( value['comentarios'] == "" || value['comentarios'] == "null" ) {
+            if ( value['comentarios'] == "" || value['comentarios'] == null ) {
 				taulaAm += '<td>--</td>';
 			} else {
 				taulaAm += '<td>' +	value['comentarios'] + '</td>';
@@ -226,6 +227,7 @@ function processaConsultaAlumnes(data) {
             taulaAm += '</tr>';
                       
         } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "FA") {
+			totalF++;
             taulaF += '<tr id='+value['id']+'>'
             taulaF += '<td>' + profes[value['idProfesores']] + '</td>';
             taulaF += '<td>' + hores[value['idHorasCentro']] + '</td>';
@@ -233,6 +235,7 @@ function processaConsultaAlumnes(data) {
             taulaF += '</tr>';
 
         } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "RE") {
+			totalR++;
             taulaR += '<tr id='+value['id']+'>'
             taulaR += '<td>' + profes[value['idProfesores']] + '</td>';
             taulaR += '<td>' + hores[value['idHorasCentro']] + '</td>';
@@ -242,16 +245,21 @@ function processaConsultaAlumnes(data) {
     });
 
     // tanquem
-    taulaAm += '</tbody></table> <!-- taula Amonestacions -->';
-    taulaR += '</tbody></table> <!-- taula Retards --> </div>';
-    taulaF += '</tbody></table> <!-- taula Faltes --> </div>';
+    taulaAm = '<h3>Amonestacions (' + totalAm + ')</h3>' + taulaAm + 
+		'</tbody></table> <!-- taula Amonestacions -->';
+    taulaR += '<h3>Retards (' + totalR + ')</h3>' +
+		'</tbody></table> <!-- taula Retards -->';
+    taulaF += '<h3>Faltes (' + totalF + ')</h3>' +
+		'</tbody></table> <!-- taula Faltes -->';
     
     initSideCounter();
     $("#modalNom").text(nom_alumne);
 
     // Volcat de tota l'estructura html al div central d'informació
     $("#respostaPrincipal").html(capDoc + taulaAm +
-        '<div class="row-fluid">' + taulaR + taulaF +
+        '<div class="row-fluid">' + 
+        '<div class="span6">' + taulaR + '</div>' + 
+        '<div class="span6">' + taulaF + '</div>' +
         '</div> <!-- row-fluid de faltes i retards -->' );
         
     $("tr").click(clickOnRow);
