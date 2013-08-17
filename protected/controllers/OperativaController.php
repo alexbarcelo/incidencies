@@ -275,16 +275,11 @@ EOF;
 		
 		$data["incidencias"] = Yii::app()->db->createCommand()
             ->leftJoin('escritesRel', 'faltasalumnos.id=escritesRel.idIncidencias') 
-			->select(array('faltasalumnos.id', 'faltasalumnos.idProfesores', 
-				'faltasalumnos.idTipoIncidencias', 'faltasalumnos.idHorasCentro', 
-				'faltasalumnos.dia', 'faltasalumnos.comentarios', 
-				// i afegim les del join
-			    'escritesRel.idIncidencias', 'escritesRel.id as RelID'))
+			->select(array('faltasalumnos.idTipoIncidencias', 'faltasalumnos.idAlumnos'))
             ->from('faltasalumnos')
 				// ens assegurem que coincideix l'alumne i que no estan
 				// ja assignades a cap amonestació escrita
-			->where('idAlumnos IN (:idalumnes) AND escritesRel.id IS NULL',
-				array(':idalumnes' => implode(",",$llista_alumnes) ))
+			->where('idAlumnos IN (' + implode(",",$llista_alumnes) + ') AND escritesRel.id IS NULL')
 			->queryAll();
 		
 		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.

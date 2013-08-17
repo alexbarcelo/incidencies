@@ -36,8 +36,6 @@
           padding-right: 5px;
         }
 	  }
-
-      }
     </style>
 </head>
 <body>

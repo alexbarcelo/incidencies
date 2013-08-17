@@ -8,6 +8,8 @@
  profes = new Array();
  nom_alumne = "";
  id_alumne = 0;
+ nom_classe = "";
+ id_classe = 0;
 
 $(function(){
     // Seleccionem link actiu del menú principal
@@ -34,7 +36,13 @@ $(function(){
     $.get(URLprefix + "llistatHores", setupHores);
 
     // Accio quan s'escull un alumne
-    $("#escull").click(alumneSeleccionat);
+    $("#escull").click(function() {
+	    // agafem el valor corresponent a l'alumne selected
+		al = $("#llista_alumnes option:selected");
+		nom_alumne = al.text();
+		id_alumne = al.val();
+		alumneSeleccionat()
+	});
     $("#llista_alumnes").dblclick(alumneSeleccionat);
     
     // Accio quan s'escull una classe
@@ -109,10 +117,6 @@ function preparaPagina () {
  * de la consulta (dades d'amonestacions de l'alumne)
  */
 function alumneSeleccionat() {
-    // agafem el valor corresponent a l'alumne selected
-    al = $("#llista_alumnes option:selected");
-    nom_alumne = al.text();
-    id_alumne = al.val();
     $("#respostaPrincipal").css("display","inherit")
           .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
     $.get(URLprefix + "consultaAlumne/" + id_alumne , processaConsultaAlumnes)
@@ -130,6 +134,18 @@ function alumneSeleccionat() {
  * al div principal de resposta
  */
 function classeSeleccionada() {
+	// agafem el valor corresponent a la classe en qüestió
+    al = $("#filtres_classe option:selected");
+    nom_classe = al.text();
+    id_classe = al.val();
+    $("#respostaPrincipal").css("display","inherit")
+          .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
+    $.get(URLprefix + "consultaClasse/" + id_classe , processaConsultaClasse)
+		.fail(function(data) {
+			$("#respostaPrincipal").html('<div class="alert alert-block">' +
+				"<h4>Error intern en l'aplicació</h4>"
+				+ data.status + " " + data.statusText + '</div><div>' + data.responseText + '</div>');
+		});
 }
 
 /*
@@ -189,8 +205,20 @@ function clickOnRow() {
 }
 
 /*
+ * Acció de filtratge d'alumnes
+ * Torna una comanda SQL correcta. Sanitized, no explotable per
+ * usuaris malintencionats
+ */
+function filtraAlumnes() {
+    var nom = $("#filtres_nom").val();
+
+    $("#llista_alumnes").load(URLprefix + "filtraAlumnes",{'query':nom});
+}
+
+
+/*
  * Aquesta funció es crida com a callback davant de crides AJAX de
- * consulta.
+ * consulta d'alumnes.
  *
  * data és la variable JSON que conté el contingut de la resposta
  * L'objectiu és mostrar una taula correctament formatada
@@ -276,12 +304,69 @@ function processaConsultaAlumnes(data) {
 }
 
 /*
- * Acció de filtratge d'alumnes
- * Torna una comanda SQL correcta. Sanitized, no explotable per
- * usuaris malintencionats
+ * Aquesta funció es crida com a callback davant de crides AJAX de
+ * consulta de classe.
+ *
+ * data és la variable JSON que conté el contingut de la resposta
+ * L'objectiu és mostrar una taula correctament formatada
  */
-function filtraAlumnes() {
-    var nom = $("#filtres_nom").val();
+function processaConsultaClasse(data) {
+    // capcalera del document
+    var capDoc = '<h2>Consulta de la classe:</h2>' +
+        '<h1><small>' + nom_classe + '</small></h1>';
+    var massCounter = {};
+    
+    // preparem la taula
+    var taula =
+        '<table class="table table-striped" id="taulaAlumnes">' +
+        '<thead><tr>'+ '<th>#</th>' + '<th>Alumne</th>' + 
+        '<th>Am. Orals</th>' + '<th>Faltes</th>' + 
+        '<th>Retards</th>' + '</tr></thead>' + '<tbody>';
+    
+    /*
+     * Procedim a processar els alumnes
+     */
+    i = 0;
+    $.each(data["alumnos"], function (index, value) {
+		taula += '<tr><td>' + ++i + '</td>';
+        taula += '<td><a href="#" class="rowAlumne" data-id="' + value["id"] + '">' + value["nombre"] + '</a></td>';
+        taula += '<td><span id="tdAm' + value["id"] + '"></span></td>';
+        taula += '<td><span id="tdF' + value["id"] + '"></span></td>';
+        taula += '<td><span id="tdR' + value["id"] + '"></span></td>';
+        taula += '</tr>';
+        massCounter["#tdAm" + value["id"]] = 0;
+		massCounter["#tdF" + value["id"]] = 0;
+        massCounter["#tdR" + value["id"]] = 0;
+    });
+    
+    /*
+     * I ara a contar totes les incidencies desglosant per alumne
+     */
+    $.each(data["incidencias"], function (index, value) {
+		if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "AM") {
+			massCounter["#tdAm" + value["idAlumnos"]]++;
+        } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "FA") {
+			massCounter["#tdF" + value["idAlumnos"]]++;
+        } else if (value['idTipoIncidencias'] > 0 && llistat_idtipus[value['idTipoIncidencias']].simbolo == "RE") {
+			massCounter["#tdR" + value["idAlumnos"]]++;
+		}
+    });     
 
-    $("#llista_alumnes").load(URLprefix + "filtraAlumnes",{'query':nom});
+    // tanquem
+    taula += '</tbody></table> <!-- taula Amonestacions -->';
+    
+    // Volcat de tota l'estructura html al div central d'informació
+    $("#respostaPrincipal").html(capDoc + taula);
+    
+    // Assignem els valors calculats al nou html
+    for (var x in  massCounter) {
+		$(x).text(massCounter[x]);
+	}
+
+	$(".rowAlumne").click(function() {
+	    // agafem el valor corresponent a l'alumne selected
+		id_alumne = $(this).attr("data-id");
+		nom_alumne = $(this).text();
+		alumneSeleccionat()
+	});
 }
