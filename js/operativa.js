@@ -36,14 +36,16 @@ $(function(){
     $.get(URLprefix + "llistatHores", setupHores);
 
     // Accio quan s'escull un alumne
-    $("#escull").click(function() {
+    var preEscullAlumne = function () {
 	    // agafem el valor corresponent a l'alumne selected
 		al = $("#llista_alumnes option:selected");
 		nom_alumne = al.text();
 		id_alumne = al.val();
 		alumneSeleccionat()
-	});
-    $("#llista_alumnes").dblclick(alumneSeleccionat);
+	};
+	
+    $("#escull").click(preEscullAlumne);
+    $("#llista_alumnes").dblclick(preEscullAlumne);
     
     // Accio quan s'escull una classe
     $("#escull_classe").click(classeSeleccionada);
