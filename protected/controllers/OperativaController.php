@@ -24,8 +24,8 @@ class OperativaController extends Controller
         return array(
             array('allow',  // allow profes (per ara, els unics que fan login)
                 'actions'=>array('index','llistatProfes', 'llistatTipus',
-                    'filtraAlumnes', 'llistatClasses', 'novaIncidencia',
-                    'consulta', 'llistatHores', 'creaEscrita'),
+                    'filtraAlumnes', 'llistatClasses', 'consultaClasse',
+                    'consultaAlumne', 'llistatHores', 'creaEscrita'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -212,7 +212,7 @@ EOF;
     }
 
     /**
-     * Funcio generica per a obtenir informacio
+     * Funcio per a obtenir informacio d'un alumne
      *
      * Es retorna un JSON que el Javascript triturarà addientment.
      * En funció del paràmetre ID que es passarà a la consulta.
@@ -243,4 +243,54 @@ EOF;
 		header('Content-type: application/json');
         print_r (CJSON::encode($data));
     }
+    
+	/**
+     * Funcio per a obtenir informacio d'un alumne
+     *
+     * Es retorna un JSON que el Javascript triturarà addientment.
+     * En funció del paràmetre ID que es passarà a la consulta.
+     */
+	public function actionConsultaClasse($id) {
+		$data = array (
+			"alumnos" => array(),
+			"incidencias" => array(),
+		);
+		
+		$llista_alumnes = array();
+		
+		$data["alumnos"] = Yii::app()->db->createCommand()
+			// Join entre alumnos i gruposalumnos
+            ->join('alumnos', 'gruposalumno.idAlumnos=alumnos.id') 
+			->select(array('alumnos.nombre', 'alumnos.id')) 
+            ->from('gruposalumno')
+				// condició: que la classe sigui la que volem
+			->where('grupoGestion=:grupoGestion ',
+				array(':grupoGestion' => $id) )
+			->order('alumnos.nombre asc')
+			->queryAll();
+			
+		foreach ($data["alumnos"] as $alumne) {
+			$llista_alumnes[] = $alumne["id"];
+		}
+		
+		$data["incidencias"] = Yii::app()->db->createCommand()
+            ->leftJoin('escritesRel', 'faltasalumnos.id=escritesRel.idIncidencias') 
+			->select(array('faltasalumnos.id', 'faltasalumnos.idProfesores', 
+				'faltasalumnos.idTipoIncidencias', 'faltasalumnos.idHorasCentro', 
+				'faltasalumnos.dia', 'faltasalumnos.comentarios', 
+				// i afegim les del join
+			    'escritesRel.idIncidencias', 'escritesRel.id as RelID'))
+            ->from('faltasalumnos')
+				// ens assegurem que coincideix l'alumne i que no estan
+				// ja assignades a cap amonestació escrita
+			->where('idAlumnos IN (:idalumnes) AND escritesRel.id IS NULL',
+				array(':idalumnes' => implode(",",$llista_alumnes) ))
+			->queryAll();
+		
+		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Pragma: no-cache'); // HTTP 1.0.
+        header('Expires: 0'); // Proxies.
+		header('Content-type: application/json');
+        print_r (CJSON::encode($data));
+	}
 }
