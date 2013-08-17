@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `escrites` (
   `validada` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY (`idAlumnos`)
-) AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `escritesRel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `escritesRel` (
   PRIMARY KEY (`id`),
   UNIQUE KEY (`idIncidencias`),
   KEY (`idEscrites`)
-) AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 ;
 EOD
 );
 		  $cmd->execute();

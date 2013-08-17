@@ -79,13 +79,64 @@ class OperativaController extends Controller
      * de identificadors d'amonestacions i amb aquesta llista s'hauria
      * de generar una nova amonestació escrita.
      */
-    public function actionCreaEscrita()
+    public function actionCreaEscrita($id)
     {
-        if (!isset($_POST['incidencies'])) {
-            // AJAX, bad call, let's quit
-            return;
-        } else {
-			echo var_dump($_POST['incidencies']);
+        if (!isset($_POST['incidencies']) ) {
+            // AJAX, bad call, let's complain and quit
+            echo <<<EOF
+<div class="alert alert-block">
+    <h4>Error en la petició</h4>
+	<p>Assegureu-vos que heu seguit el procediment correcte per a generar
+    l'amonestació escrita.</p>
+    <p>No s'ha generat cap amonestació.</p>
+</div>
+EOF;
+			return;
+        } elseif (!is_array($_POST['incidencies']) ||
+			      count ($_POST['incidencies']) < 1 ) {
+			// Hem rebut una cosa que no és un array, o un array buit 
+            echo <<<EOF
+<div class="alert alert-block">
+    <h4>Error en el recull d'incidències</h4>
+	<p>No s'ha enviat correctament el recull d'incidències.</p>
+    <p>No s'ha generat cap amonestació.</p>
+</div>
+EOF;
+		} else {
+			// let's transaction it! (s'han de fer múltiples coses)
+			$transact = Yii::app()->db->beginTransaction();
+			try {
+				Yii::app()->db->createCommand()
+					->insert("escrites", array("idAlumnos" => $id));
+				$idEscrites = Yii::app()->db->getLastInsertID();
+				foreach ($_POST['incidencies'] as $inc) {
+					Yii::app()->db->createCommand()
+						->insert("escritesRel", array(
+							"idIncidencias" => $inc,
+							"idEscrites" => $idEscrites
+							));
+				}
+				$transact->commit();
+				$PDFlink = Yii::app()->createUrl('operativa/consultaPDF', array("id" => $idEscrites));
+				echo <<<EOF
+<div class="alert alert-block alert-success">
+    <h4>Amonestació generada amb èxit</h4>
+	<p>Es notificarà a cap d'estudis per aquesta amonestació escrita.</p>
+	<p>Podeu imprimir el document generat <a href="$PDFlink">aquí</a></p>
+</div>
+EOF;
+			} catch(Exception $e) {
+				$transact->rollback();
+				echo <<<EOF
+<div class="alert alert-block">
+    <h4>Error en el recull d'incidències</h4>
+	<p>No s'ha pogut introduir a la base de dades l'amonestació escrita amb
+	les incidències sel·leccionades. Assegureu-vos que les incidències 
+	són vigents i no han estat ja assignades a una amonestació escrita.</p>
+    <p>No s'ha generat cap amonestació.</p>
+</div>
+EOF;
+			}
 		}
     }
 
@@ -171,9 +222,17 @@ class OperativaController extends Controller
         $header = array();
 
 		$data = Yii::app()->db->createCommand()
-			->select('id, idProfesores, idTipoIncidencias, idHorasCentro, dia, comentarios')
+            ->leftJoin('escritesRel', 'faltasalumnos.id=escritesRel.idIncidencias') 
+			->select(array('faltasalumnos.id', 'faltasalumnos.idProfesores', 
+				'faltasalumnos.idTipoIncidencias', 'faltasalumnos.idHorasCentro', 
+				'faltasalumnos.dia', 'faltasalumnos.comentarios', 
+				// i afegim les del join
+			    'escritesRel.idIncidencias', 'escritesRel.id as RelID'))
             ->from('faltasalumnos')
-			->where('idAlumnos=:idalumne', array(':idalumne' => $id) )
+				// ens assegurem que coincideix l'alumne i que no estan
+				// ja assignades a cap amonestació escrita
+			->where('idAlumnos=:idalumne AND escritesRel.id IS NULL',
+				array(':idalumne' => $id) )
 			->order(array ('dia desc', 'idHorasCentro asc'))
 			->queryAll();
 

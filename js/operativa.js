@@ -82,7 +82,13 @@ function modalGenOk() {
 	preparaPagina();
     $("#respostaPrincipal").css("display","inherit")
       .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
-	  .load(URLprefix + "creaEscrita" , {"incidencies": llista, "id": id_alumne});
+	  .load(URLprefix + "creaEscrita/" + id_alumne , {"incidencies": llista}, function(response, status, xhr) {
+		if (status == "error") {
+		  $("#respostaPrincipal").html('<div class="alert alert-block">' +
+			"<h4>Error intern en l'aplicació</h4>"
+			+ xhr.status + " " + xhr.statusText + '</div><div>' + response + '</div>');
+	    }
+	  });
 }
 
 /*
@@ -108,7 +114,12 @@ function alumneSeleccionat() {
     id_alumne = al.val();
     $("#respostaPrincipal").css("display","inherit")
           .html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>');
-    $.get(URLprefix + "consultaAlumne/" + id_alumne , processaConsultaAlumnes);
+    $.get(URLprefix + "consultaAlumne/" + id_alumne , processaConsultaAlumnes)
+		.fail(function(data) {
+			$("#respostaPrincipal").html('<div class="alert alert-block">' +
+				"<h4>Error intern en l'aplicació</h4>"
+				+ data.status + " " + data.statusText + '</div><div>' + data.responseText + '</div>');
+		});
 }
 
 /*
