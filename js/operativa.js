@@ -322,7 +322,7 @@ function processaConsultaClasse(data) {
     var taula =
         '<table class="table table-striped" id="taulaAlumnes">' +
         '<thead><tr>'+ '<th>#</th>' + '<th>Alumne</th>' + 
-        '<th>Am. Escrites</th>' + '<th>Am. Orals</th>' + '<th>Faltes</th>' + 
+        '<th>Am. Escrites (Pendents de validació)</th>' + '<th>Am. Orals</th>' + '<th>Faltes</th>' + 
         '<th>Retards</th>' + '</tr></thead>' + '<tbody>';
     
     /*
@@ -332,12 +332,14 @@ function processaConsultaClasse(data) {
     $.each(data["alumnos"], function (index, value) {
 		taula += '<tr><td>' + ++i + '</td>';
         taula += '<td><a href="#" class="rowAlumne" data-id="' + value["id"] + '">' + value["nombre"] + '</a></td>';
-        taula += '<td><span id="tdEs' + value["id"] + '"></span></td>';
+        taula += '<td><span id="tdEs' + value["id"] + '"></span> ' + 
+			'(<span id="tdEsNoVal' + value["id"] + '"></span>)</td>';
         taula += '<td><span id="tdAm' + value["id"] + '"></span></td>';
         taula += '<td><span id="tdF' + value["id"] + '"></span></td>';
         taula += '<td><span id="tdR' + value["id"] + '"></span></td>';
         taula += '</tr>';
         massCounter["#tdEs" + value["id"]] = 0;
+        massCounter["#tdEsNoVal" + value["id"]] = 0;
         massCounter["#tdAm" + value["id"]] = 0;
 		massCounter["#tdF" + value["id"]] = 0;
         massCounter["#tdR" + value["id"]] = 0;
@@ -360,8 +362,12 @@ function processaConsultaClasse(data) {
      * Per acabar, afegim totes les escrites
      */
     $.each(data["escrites"], function (index, value) {
-		massCounter["#tdEs" + value["idAlumnos"]]++;
-    });  
+		if (value['validada'] == '1') {
+			massCounter["#tdEs" + value["idAlumnos"]]++;
+		} else {
+			massCounter["#tdEsNoVal" + value["idAlumnos"]]++;
+		}
+    });
 
     // tanquem
     taula += '</tbody></table> <!-- taula Amonestacions -->';

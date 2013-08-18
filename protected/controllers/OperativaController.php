@@ -285,10 +285,9 @@ EOF;
 			->queryAll();
 			
 		$data["escrites"] = Yii::app()->db->createCommand()
-			->select('idAlumnos')
+			->select(array('idAlumnos', 'validada'))
             ->from('escrites')
 			->where('idAlumnos IN (' + implode(",",$llista_alumnes) + ')')
-			->andWhere ('validada=1')
 			->queryAll();
 		
 		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
