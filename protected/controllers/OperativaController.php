@@ -254,6 +254,7 @@ EOF;
 		$data = array (
 			"alumnos" => array(),
 			"incidencias" => array(),
+			"escrites" => array(),
 		);
 		
 		$llista_alumnes = array();
@@ -279,7 +280,15 @@ EOF;
             ->from('faltasalumnos')
 				// ens assegurem que coincideix l'alumne i que no estan
 				// ja assignades a cap amonestació escrita
-			->where('idAlumnos IN (' + implode(",",$llista_alumnes) + ') AND escritesRel.id IS NULL')
+			->where('idAlumnos IN (' + implode(",",$llista_alumnes) + ')')
+			->andWhere ('escritesRel.id IS NULL')
+			->queryAll();
+			
+		$data["escrites"] = Yii::app()->db->createCommand()
+			->select('idAlumnos')
+            ->from('escrites')
+			->where('idAlumnos IN (' + implode(",",$llista_alumnes) + ')')
+			->andWhere ('validada=1')
 			->queryAll();
 		
 		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
