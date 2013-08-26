@@ -37,15 +37,16 @@ class UserIdentity extends CUserIdentity
           if ($row["usuario"] === '13') {
             $this->setState("equipDirectiu", true);
           }
-          
+
           /*
            * Better safe than sorry:
            * forçar sempre l'existència de les dues taules que necessitem
            */
-		  $cmd  = Yii::app()->db->createCommand(<<<EOD
+                  $cmd  = Yii::app()->db->createCommand(<<<EOD
 CREATE TABLE IF NOT EXISTS `escrites` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idAlumnos` int(11) NOT NULL,
+  `numCorrelatiu` int(11) NOT NULL,
   `validada` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY (`idAlumnos`)
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `escritesRel` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 ;
 EOD
 );
-		  $cmd->execute();
+                  $cmd->execute();
         }
 
         return !$this->errorCode;

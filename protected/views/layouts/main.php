@@ -14,7 +14,6 @@
 
     <!-- Le styles -->
     <link href="<?php echo Yii::app()->request->baseUrl; ?>/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.min.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -22,6 +21,15 @@
       }
       .sidebar-nav {
         padding: 9px 0;
+      }
+      .adminView {
+        display: <?php
+  if (Yii::app()->user->getState('equipDirectiu',false)) {
+    echo "inherit";
+  } else {
+    echo "none";
+  }
+?>;
       }
 
       @media (max-width: 980px) {
@@ -35,7 +43,7 @@
           padding-left: 5px;
           padding-right: 5px;
         }
-	  }
+    }
     </style>
 </head>
 <body>
@@ -66,10 +74,7 @@
             <ul class="nav">
               <li id="entrada"><a href="<?php echo Yii::app()->createUrl('site/login'); ?>">Entrada</a></li>
               <li id="operativa"><a href="<?php echo Yii::app()->createUrl('operativa'); ?>">Operativa</a></li>
-              <li id="estadistiques"><a href="<?php echo Yii::app()->createUrl('estadistiques') ; ?>">Estadístiques</a></li>
-              <?php if (Yii::app()->user->getState('equipDirectiu',false)) { ?>
-              <li id="admin"><a href="<?php echo Yii::app()->createUrl('admin') ; ?>">Administració</a></li>
-              <?php } ?>
+              <li id="admin" class="adminView" style="display: none;"><a href="#">Validacions pendents</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
