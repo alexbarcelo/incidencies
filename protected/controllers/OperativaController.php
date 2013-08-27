@@ -25,7 +25,8 @@ class OperativaController extends Controller
             array('allow',  // allow profes (per ara, els unics que fan login)
                 'actions'=>array('index','llistatProfes', 'llistatTipus',
                     'filtraAlumnes', 'llistatClasses', 'consultaClasse',
-                    'consultaAlumne', 'llistatHores', 'creaEscrita'),
+                    'consultaAlumne', 'llistatHores', 'creaEscrita',
+                    'consultaPDF'),
                 'users'=>array('@'),
             ),
             array('allow', // allow admin (equipDirectiu) la resta
@@ -459,6 +460,33 @@ EOF;
     header('Expires: 0'); // Proxies.
     header('Content-type: application/json');
     print_r (CJSON::encode($data));
+  }
+
+  public function actionConsultaPDF($id) {
+    $escrita = Yii::app()->db->createCommand()
+      // Seleccionar de la taula d'amonestacions escrites
+      ->select(array('alumnos.nombre', 'escrites.numCorrelatiu'))
+      ->from('escrites')
+      // obtenint el nom de la taula alumnos
+      ->join('alumnos', 'alumnos.id=escrites.idAlumnos')
+      ->where("escrites.id=:id" , array('id' => $id))
+      ->queryRow();
+    $pdftitle = $escrita["nombre"] . ' - #' . $escrita["numCorrelatiu"];
+    $pdfname = $escrita["nombre"] . '_' . $escrita["numCorrelatiu"];
+
+    $pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf',
+                            'P', 'cm', 'A4', true, 'UTF-8');
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor("INS Ernest Lluch");
+    $pdf->SetTitle($pdftitle);
+    $pdf->SetSubject("Notificació d'amonestació escrita");
+    $pdf->SetKeywords("institut, Ernest Lluch, notificació, amonestació");
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+    $pdf->AddPage();
+    $pdf->SetFont("times", "BI", 20);
+    $pdf->Cell(0,10,"Example 002",1,1,'C');
+    $pdf->Output($pdfname, "I");
   }
 
 
