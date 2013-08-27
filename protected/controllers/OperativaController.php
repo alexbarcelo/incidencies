@@ -474,6 +474,33 @@ EOF;
     $pdftitle = $escrita["nombre"] . ' - #' . $escrita["numCorrelatiu"];
     $pdfname = $escrita["nombre"] . '_' . $escrita["numCorrelatiu"];
 
+    // voldrem filtrar i obtenir els tipus
+    $tipus = Yii::app()->db->createCommand()
+              ->select('id, simbolo, descripcion, peso, tipo')
+              ->from('tipoincidencias')
+              ->where("tipo='faltas'")
+              ->queryAll();
+
+    $incidencies = Yii::app()->db->createCommand()
+      // seleccionem de la relació d'escrites
+      ->select(array('faltasalumnos.idTipoIncidencias', 'faltasalumnos.idHorasCentro',
+          'faltasalumnos.dia', 'faltasalumnos.comentarios'))
+      ->from('escritesRel')
+      ->join('faltasalumnos', 'escritesRel.idIncidencias=faltasalumnos.id')
+      ->where('escritesRel.idEscrites=:id', array('id' => $id))
+      ->order('faltasalumnos.idTipoIncidencias')
+      ->queryAll();
+
+// dumpegem per debugging
+    header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+    header('Pragma: no-cache'); // HTTP 1.0.
+    header('Expires: 0'); // Proxies.
+    header('Content-type: text/plain; charset=utf-8');
+    print_r($escrita);
+    print_r($tipus);
+    print_r($incidencies);
+
+/*
     $pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf',
                             'P', 'cm', 'A4', true, 'UTF-8');
     $pdf->SetCreator(PDF_CREATOR);
@@ -487,6 +514,7 @@ EOF;
     $pdf->SetFont("times", "BI", 20);
     $pdf->Cell(0,10,"Example 002",1,1,'C');
     $pdf->Output($pdfname, "I");
+    */
   }
 
 
