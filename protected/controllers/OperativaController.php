@@ -465,7 +465,7 @@ EOF;
   public function actionConsultaPDF($id) {
     $escrita = Yii::app()->db->createCommand()
       // Seleccionar de la taula d'amonestacions escrites
-      ->select(array('alumnos.nombre', 'escrites.numCorrelatiu'))
+      ->select(array('alumnos.nombre', 'escrites.idAlumnos','escrites.numCorrelatiu'))
       ->from('escrites')
       // obtenint el nom de la taula alumnos
       ->join('alumnos', 'alumnos.id=escrites.idAlumnos')
@@ -476,10 +476,18 @@ EOF;
 
     // voldrem filtrar i obtenir els tipus
     $tipus = Yii::app()->db->createCommand()
-              ->select('id, simbolo, descripcion, peso, tipo')
-              ->from('tipoincidencias')
-              ->where("tipo='faltas'")
-              ->queryAll();
+      ->select('id, simbolo, descripcion, peso, tipo')
+      ->from('tipoincidencias')
+      ->where("tipo='faltas'")
+      ->queryAll();
+
+    // saber la classe
+    $classe = Yii::app()->db->createCommand()
+      ->select('grupos.descripcion')
+      ->from('gruposalumno')
+      ->join('grupos', 'grupos.grupoGestion=gruposalumno.grupoGestion')
+      ->where("idAlumnos=:id", array('id' => $escrita["idAlumnos"]))
+      ->queryRow();
 
     $incidencies = Yii::app()->db->createCommand()
       // seleccionem de la relació d'escrites
@@ -488,33 +496,99 @@ EOF;
       ->from('escritesRel')
       ->join('faltasalumnos', 'escritesRel.idIncidencias=faltasalumnos.id')
       ->where('escritesRel.idEscrites=:id', array('id' => $id))
-      ->order('faltasalumnos.idTipoIncidencias')
+      ->order(array ('faltasalumnos.dia asc',
+        'faltasalumnos.idHorasCentro asc'))
       ->queryAll();
 
-// dumpegem per debugging
-    header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
-    header('Pragma: no-cache'); // HTTP 1.0.
-    header('Expires: 0'); // Proxies.
-    header('Content-type: text/plain; charset=utf-8');
-    print_r($escrita);
-    print_r($tipus);
-    print_r($incidencies);
+    // Per a tenir la data en català sense haver de barallar-nos amb locales extranys
+    $dies=array("diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte");
 
-/*
+    $mesos=array("de gener","de febrer","de març","d'abril","de maig","de juny",
+      "de juliol", "d'agost","de setembre","d'octubre","de novembre","de desembre");
+
+    $today = "".$dies[date('w')]." ".date('d')." ".$mesos[date('n')-1]." de ".date('Y');
+
+    $style = "<style>p {text-align: justify;}</style>";
+
+    $textInici = $style . <<<EOT
+<p></p><p>Sr./Sra. </p>
+
+<p>El seu fill/a <strong>{$escrita["nombre"]}</strong>
+del curs <strong>{$classe["descripcion"]}</strong> ha incorregut en la següent conducta
+contrària a les normes de convivència del centre:</p>
+EOT;
+
+    $textFinal = $style . <<<EOT
+<p style="text-align: justify;">Per aquest motiu, d’acord amb allò que s’estableix en  la Llei 12/2009,
+de 10 de juliol (Llei d’Educació Catalana) i el Decret 102/2010, de 3 d’agost
+(Decret d’autonomia de centres)  li ha estat imposada, com a mesura correctora,
+la present amonestació escrita. Així mateix, els informen que la repetició
+de conductes contràries a les normes de convivència podrà ser considerada
+una falta greument perjudicial per a la convivència del centre, que podria
+motivar la iniciació d’un expedient disciplinari.</p>
+
+<p>Els informem que disposen d’un termini de 2 dies per reclamar contra
+aquesta mesura correctora davant la Direcció del centre.</p>
+
+<p>Els preguem que retornin signada aquesta comunicació i sol·licitin
+una entrevista amb el tutor/a.</p>
+
+<p>Barcelona, $today</p>
+EOT;
+
+    $textAmonestacio = "<p>Lorem ipsum dolor sit amet</p>";
+
     $pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf',
                             'P', 'cm', 'A4', true, 'UTF-8');
+    $pdf->setPageOrientation('P',true,'1');
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor("INS Ernest Lluch");
     $pdf->SetTitle($pdftitle);
     $pdf->SetSubject("Notificació d'amonestació escrita");
     $pdf->SetKeywords("institut, Ernest Lluch, notificació, amonestació");
     $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
+    // default footer print and data values
+    $pdf->setPrintFooter(true);
+    $pdf->setFooterData();
+
     $pdf->AddPage();
-    $pdf->SetFont("times", "BI", 20);
-    $pdf->Cell(0,10,"Example 002",1,1,'C');
+    $pdf->Image("../incidencies/escrita/consorci.jpg",1,1,'',2.4);
+    $pdf->Ln(2.8);
+    $pdf->SetFont("times", "B", 18);
+    $pdf->Cell(0,1,"#".$escrita["numCorrelatiu"]." - Notificació d'amonestació escrita",1,1,'C');
+
+    $pdf->SetFont("times", "", 12);
+    $pdf->writeHTML($textInici);
+
+    $pdf->Ln(0.5);
+    // problema que la funció writeHTMLCell no deixa tocar $maxh
+    // això, segons la documentació de la API, NO es pot fer
+    $h = 4;
+    $pdf->MultiCell(0,$h,$textAmonestacio,1,'J',false,1,'','',true,
+      0, /*!!*/ true /*!!*/, true, $h, 'T', false);
+    $pdf->Ln(0.5);
+
+    $pdf->writeHTML($textFinal, true,false,true);
+
+    // Les tres signatures
+    $h = 3.5;
+    $pdf->MultiCell(5,$h,"Tutor/a"             ,0,'J',false,0,2,'',true,0,false,true,$h,'B',false);
+    $pdf->MultiCell(6,$h,"Direcció"            ,0,'J',false,0,'','',true,0,false,true,$h,'B',false);
+    $pdf->MultiCell(3.7,$h,"Prefectura d'estudis",0,'J',false,0,'','',true,0,false,true,$h,'B',false);
+    $pdf->Image("../incidencies/escrita/signaturabrosa.gif", 6,20.5,0,1.7);
+
+    // Algo semblant a un peu, només per la primera pàgina
+    $pdf->Image("../incidencies/escrita/signaturalluch.jpg", 0, 26.5,0,2);
+    $pdf->SetFont("times", "", 9);
+    $pdf->MultiCell(0,0.5,
+      "Carrer Diputació, 15  08015 Barcelona  Tel. 93 426 06 76  Fax 93 426 39 10  www.insernestlluch.cat",
+      0,'C',false,0, 0,28);
+    $pdf->AddPage();
+
+    header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+    header('Pragma: no-cache'); // HTTP 1.0.
+    header('Expires: 0'); // Proxies.
     $pdf->Output($pdfname, "I");
-    */
   }
 
 
