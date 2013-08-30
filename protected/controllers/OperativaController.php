@@ -207,7 +207,8 @@ EOF;
          * amb numeració correlativa #3 havent-hi números correlatius superiors
          * (p.ex. la #4) els números no s'actualitzaran. Això vol dir que
          * quedarà un forat a la correlació d'escrites per a un alumne
-         * determinat.
+         * determinat. I, segurament, la següent amonestació tindrà
+         * una mala numeració. It's not a bug, it's a feature!
          */
 
         // eliminem les relacions
@@ -475,11 +476,25 @@ EOF;
     $pdfname = $escrita["nombre"] . '_' . $escrita["numCorrelatiu"];
 
     // voldrem filtrar i obtenir els tipus
-    $tipus = Yii::app()->db->createCommand()
+    $raw_tipus = Yii::app()->db->createCommand()
       ->select('id, simbolo, descripcion, peso, tipo')
       ->from('tipoincidencias')
       ->where("tipo='faltas'")
       ->queryAll();
+    $tipus = array();
+    foreach ($raw_tipus as $tipustype) {
+      $tipus[$tipustype["id"]] = $tipustype["simbolo"];
+    }
+
+    // escriure correctament la hora del centre
+    $raw_hores = Yii::app()->db->createCommand()
+      ->select('id, inicio')
+      ->from('horascentro')
+      ->queryAll();
+    $hores = array();
+    foreach ($raw_hores as $horestype) {
+      $hores[$horestype["id"]] = $horestype["inicio"];
+    }
 
     // saber la classe
     $classe = Yii::app()->db->createCommand()
@@ -489,6 +504,7 @@ EOF;
       ->where("idAlumnos=:id", array('id' => $escrita["idAlumnos"]))
       ->queryRow();
 
+    // llistat d'incidencies associades a l'escrita
     $incidencies = Yii::app()->db->createCommand()
       // seleccionem de la relació d'escrites
       ->select(array('faltasalumnos.idTipoIncidencias', 'faltasalumnos.idHorasCentro',
@@ -500,6 +516,72 @@ EOF;
         'faltasalumnos.idHorasCentro asc'))
       ->queryAll();
 
+    $style = "<style>p {text-align: justify;} .punts {color: 0xCCCCCC; font-family: monospace;}</style>";
+
+    // processem les dades en funció de si és escrita directa o acumulació
+    $escritaDirecta = false;
+    $textAmonestacio = "";
+    if (count($incidencies) == 0) {
+      throw new CHttpException(404);
+    } elseif (count($incidencies) > 1) {
+      $escritaDirecta = false;
+      $totalF = 0;
+      $totalR = 0;
+      $totalAm = 0;
+      $taulaF = "<h1>Faltes</h1>" .
+        "<table><thead><tr><th>Dia</th><th>Hora</th></tr></thead><tbody>";
+      $taulaR = "<h1>Retards</h1>" .
+        "<table><thead><tr><th>Dia</th><th>Hora</th></tr></thead><tbody>";
+      $taulaAm = "<h1>Amonestacions Orals</h1>" .
+        "<table><thead><tr><th>Dia</th><th>Hora</th><th>Comentaris</th></tr></thead><tbody>";
+      foreach ($incidencies as $inc) {
+        if ($inc["idTipoIncidencias"]>0 && $tipus[$inc["idTipoIncidencias"]] == "AM") {
+          $totalAm++;
+          $taulaAm .= "<tr>" .
+            "<td>" . $inc["dia"] . "</td>" .
+            "<td>" . $hores[$inc["idHorasCentro"]] . "</td>" .
+            "<td>" . $inc["comentarios"] . "</td>" .
+            "</tr>";
+        } else if ($inc["idTipoIncidencias"]>0 && $tipus[$inc["idTipoIncidencias"]] == "FA") {
+          $totalF++;
+          $taulaF .= "<tr>" .
+            "<td>" . $inc["dia"] . "</td>" .
+            "<td>" . $hores[$inc["idHorasCentro"]] . "</td>" .
+            "</tr>";
+        } else if ($inc["idTipoIncidencias"]>0 && $tipus[$inc["idTipoIncidencias"]] == "RE") {
+          $totalR++;
+          $taulaR .= "<tr>" .
+            "<td>" . $inc["dia"] . "</td>" .
+            "<td>" . $hores[$inc["idHorasCentro"]] . "</td>" .
+            "</tr>";
+        }
+      }
+      $textAmonestacio = $style . "<p>Acumulació de les següents incidències:</p>";
+      $textAmonestacio .= "<ul>";
+      if ($totalF > 0) {
+        $textAmonestacio .= "<li><strong>$totalF</strong> Faltes injustificades</li>";
+      } else {
+        $taulaF = "";
+      }
+      if ($totalR > 0) {
+        $textAmonestacio .= "<li><strong>$totalR</strong> Retards</li>";
+      } else {
+        $taulaR = "";
+      }
+      if ($totalAm > 0) {
+        $textAmonestacio .= "<li><strong>$totalAm</strong> Amonestacions orals</li>";
+      } else {
+        $taulaAm = "";
+      }
+      $textAmonestacio .= "</ul>";
+    } else {
+      $escritaDirecta = true;
+      $inc = $incidencies[0];
+      $textAmonestacio = $style . "<p>En data " . $inc["dia"] .
+        " a l'hora " . $hores[$inc["idHorasCentro"]] . "</p>" .
+        "<p>Motiu:<br><strong>" . $inc["comentarios"] . "</strong></p>";
+    }
+
     // Per a tenir la data en català sense haver de barallar-nos amb locales extranys
     $dies=array("diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte");
 
@@ -507,8 +589,6 @@ EOF;
       "de juliol", "d'agost","de setembre","d'octubre","de novembre","de desembre");
 
     $today = "".$dies[date('w')]." ".date('d')." ".$mesos[date('n')-1]." de ".date('Y');
-
-    $style = "<style>p {text-align: justify;}</style>";
 
     $textInici = $style . <<<EOT
 <p></p><p>Sr./Sra. </p>
@@ -536,20 +616,29 @@ una entrevista amb el tutor/a.</p>
 <p>Barcelona, $today</p>
 EOT;
 
-    $textAmonestacio = "<p>Lorem ipsum dolor sit amet</p>";
+  $textPareMare = $style . <<<EOT
+<p>El Sr./Sra. <span class="punts">....................................</span>
+amb DNI núm <span class="punts">............</span><br>
+pare/mare de l’alumne/a <strong>{$escrita["nombre"]}</strong>
+del curs <strong>{$classe["descripcion"]}</strong>
+he rebut notificació de la present amonestació escrita.</p>
+
+<p>Barcelona, <span class="punts">...................</span> de <span class="punts">...............</span> de <span class="punts">...........</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Signatura</p>
+EOT;
 
     $pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf',
                             'P', 'cm', 'A4', true, 'UTF-8');
     $pdf->setPageOrientation('P',true,'1');
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor("INS Ernest Lluch");
+    $pdf->SetMargins(2,1.5,1);
     $pdf->SetTitle($pdftitle);
     $pdf->SetSubject("Notificació d'amonestació escrita");
     $pdf->SetKeywords("institut, Ernest Lluch, notificació, amonestació");
     $pdf->setPrintHeader(false);
     // default footer print and data values
-    $pdf->setPrintFooter(true);
-    $pdf->setFooterData();
+    $pdf->setPrintFooter(false);
 
     $pdf->AddPage();
     $pdf->Image("../incidencies/escrita/consorci.jpg",1,1,'',2.4);
@@ -557,7 +646,7 @@ EOT;
     $pdf->SetFont("times", "B", 18);
     $pdf->Cell(0,1,"#".$escrita["numCorrelatiu"]." - Notificació d'amonestació escrita",1,1,'C');
 
-    $pdf->SetFont("times", "", 12);
+    $pdf->SetFont("times", "", 11);
     $pdf->writeHTML($textInici);
 
     $pdf->Ln(0.5);
@@ -571,19 +660,31 @@ EOT;
     $pdf->writeHTML($textFinal, true,false,true);
 
     // Les tres signatures
-    $h = 3.5;
+    $h = 3;
     $pdf->MultiCell(5,$h,"Tutor/a"             ,0,'J',false,0,2,'',true,0,false,true,$h,'B',false);
     $pdf->MultiCell(6,$h,"Direcció"            ,0,'J',false,0,'','',true,0,false,true,$h,'B',false);
     $pdf->MultiCell(3.7,$h,"Prefectura d'estudis",0,'J',false,0,'','',true,0,false,true,$h,'B',false);
-    $pdf->Image("../incidencies/escrita/signaturabrosa.gif", 6,20.5,0,1.7);
+    $pdf->Image("../incidencies/escrita/signaturabrosa.gif", 6,19.5,0,1.7);
+
+    $pdf->Ln($h+1);
+    $pdf->Line(1,22.5,20,22.5,
+      array(
+        "dash" => "5,2",
+      ));
+    $pdf->writeHTML($textPareMare, true,false,true);
 
     // Algo semblant a un peu, només per la primera pàgina
-    $pdf->Image("../incidencies/escrita/signaturalluch.jpg", 0, 26.5,0,2);
+    $pdf->Image("../incidencies/escrita/signaturalluch.jpg", 1, 26.5,0,2);
     $pdf->SetFont("times", "", 9);
     $pdf->MultiCell(0,0.5,
       "Carrer Diputació, 15  08015 Barcelona  Tel. 93 426 06 76  Fax 93 426 39 10  www.insernestlluch.cat",
-      0,'C',false,0, 0,28);
-    $pdf->AddPage();
+      0,'C',false,0, 1,28);
+
+    // Si cal posar la llista detallada, la posem
+    if (!$escritaDirecta) {
+      $pdf->AddPage();
+      $pdf->writeHTML("". $taulaAm . $taulaF . $taulaR, true,false,true);
+    }
 
     header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
     header('Pragma: no-cache'); // HTTP 1.0.
