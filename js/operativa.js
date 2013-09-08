@@ -585,7 +585,7 @@ function processaConsultaClasse(data) {
     var taula =
         '<table class="table table-striped" id="taulaAlumnes">' +
         '<thead><tr>'+ '<th>#</th>' + '<th>Alumne</th>' +
-        '<th>Am. Escrites (Pendents de validació)</th>' + '<th>Am. Orals</th>' + '<th>Faltes</th>' +
+        '<th>Am.E (Pendents)</th>' + '<th>Am.O</th>' + '<th>Faltes</th>' +
         '<th>Retards</th>' + '</tr></thead>' + '<tbody>';
 
     /*
@@ -635,8 +635,21 @@ function processaConsultaClasse(data) {
     // tanquem
     taula += '</tbody></table> <!-- taula Amonestacions -->';
 
+    // línia de impressió
+    printFoot = '<div><a id="accioPrint" href="#"><i class="icon-print"></i> Imprimir aquest resum</a>' +
+        '<span style="float:right;">' + todayIs + '</span></div>';
+
     // Volcat de tota l'estructura html al div central d'informació
-    $("#respostaPrincipal").html(capDoc + taula);
+    $("#respostaPrincipal").html(capDoc + taula + printFoot);
+
+    $("#accioPrint").click(function(){
+        $('#respostaPrincipal').printElement(
+        {
+            printMode:'popup',
+            pageTitle:'Consulta classe ' + nom_classe,
+            overrideElementCSS: [URLbase + '/css/print.css']
+        });
+    });
 
     // Assignem els valors calculats al nou html
     for (var x in massCounter) {

@@ -51,6 +51,8 @@
     ================================================== -->
     <!-- No es molt elegant posar-les al principi, pero... -->
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.min.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.printElement.min.js"></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/bootstrap.min.js"></script>
 
 
@@ -74,7 +76,7 @@
             <ul class="nav">
               <li id="entrada"><a href="<?php echo Yii::app()->createUrl('site/login'); ?>">Entrada</a></li>
               <li id="operativa"><a href="<?php echo Yii::app()->createUrl('operativa'); ?>">Operativa</a></li>
-              <li id="admin" class="adminView" style="display: none;"><a href="#">Validacions pendents</a></li>
+              <li id="admin" class="adminView"><a href="#">Validacions pendents</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

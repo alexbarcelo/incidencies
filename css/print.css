@@ -25,5 +25,12 @@ blockquote {margin:1.5em;padding:1em;font-style:italic;font-size:.9em;}
 .large {font-size:1.1em;}
 .quiet {color:#999;}
 .hide {display:none;}
-a:link, a:visited {background:transparent;font-weight:700;text-decoration:underline;}
-a:link:after, a:visited:after {content:" (" attr(href) ")";font-size:90%;}
+a:link, a:visited {background:transparent;font-weight:700;text-decoration:none;color:#000}
+table
+{
+  border-collapse:collapse;
+  width:100%
+}
+table,th,td{border: 1px solid black;}
+th{text-align:center;}
+td{text-align:left;}

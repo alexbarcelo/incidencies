@@ -85,6 +85,7 @@
 <script>
   URLprefix = "<?php echo Yii::app()->createUrl('operativa'); ?>/";
   URLbase   = "<?php echo Yii::app()->request->baseUrl; ?>/";
+  todayIs   = "<?php echo date('d/m/y'); ?>"
 </script>
 
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/operativa.js"></script>
