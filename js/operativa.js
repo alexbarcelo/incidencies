@@ -29,7 +29,6 @@ $(function(){
     });
 
     // Menú d'administració (visualització d'amonestacions pendents de validar)
-    $("#admin").show();
     $("#admin a").click(function() {
       waitingResposta();
       $.get(URLprefix + "escritesPendents/" , processaConsultaPendents)
