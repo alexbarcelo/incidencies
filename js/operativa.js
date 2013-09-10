@@ -104,7 +104,7 @@ function modalGenOk() {
  * Arregla corresponentment el div de respostaPrincipal per a mostrar
  * la resposta AJAX o bé l'error obtingut (bastant verbose/debug)
  */
-function modificaEscritaOk(accio, id, data=null) {
+function modificaEscritaOk(accio, id, data) {
   // Buidem la pàgina, i deixem una espera fins que l'AJAX torni.
   preparaPagina();
   waitingResposta();
